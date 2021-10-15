@@ -5,7 +5,6 @@ function schedule(msg, args) {
     let year = args[0] || 2021;
     ergast.getSeason(year, function(err, season){
         var data = [];
-        var Table = require('easy-table')
 
         for(var race of season["races"]){
             let seasonYear = race["season"];
@@ -21,38 +20,28 @@ function schedule(msg, args) {
             time = time.substring(0, time.length-4);
             time = time.replace(':', 'h')
 
-            data.push(
-                {
-                    seasonYear: seasonYear,
-                    round: round,
-                    gp: gp,
-                    circuitName: circuitName,
-                    city: city,
-                    country: country,
-                    date: date,
-                    time: time,
-                }
-            );
+            data.push( [seasonYear, round, gp, circuitName, city, country, date, time] );
         }
 
-        var t = new Table
+        const config = {
+            border: { 
+                topBody: `─`, topJoin: `┬`, topLeft: `┌`, topRight: `┐`,
+                bottomBody: `─`, bottomJoin: `┴`, bottomLeft: `└`, bottomRight: `┘`,
+                bodyLeft: `│`, bodyRight: `│`, bodyJoin: `│`,
+                joinBody: `─`, joinLeft: `├`, joinRight: `┤`, joinJoin: `┼`
+            }
+          };
 
-        data.forEach(function(product) {
-            t.cell('Season', product.seasonYear)
-            t.cell('Round', product.round)
-            t.cell('Grand Prix', product.gp)
-            t.cell('Circuit', product.circuitName)
-            t.cell('City', product.city)
-            t.cell('Country', product.country)
-            t.cell('Date', product.date)
-            t.cell('Time', product.time)
-            t.newRow()
-          })
+        const table = require('table').table;
+        let t = table(data, config);
 
         var fs = require('fs');
         var text2png = require('text2png');
 
-        fs.writeFileSync('out.png', text2png(t.toString(), {font: "30px Test", localFontPath: "fonts/consola.ttf", localFontName: "Test", color: "black", bgColor: "white" }));
+        var str = t.toString();
+        str = str.substring(0, str.length-1);
+
+        fs.writeFileSync('out.png', text2png(str, {font: "30px Test", localFontPath: "fonts/consola.ttf", localFontName: "Test", color: "black", bgColor: "white", padding: 10 }));
 
         msg.channel.send({files: ["out.png"]});
     });
