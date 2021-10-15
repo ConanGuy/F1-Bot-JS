@@ -1,10 +1,11 @@
-const next = require("./next.js");
+const schedule = require("./schedule.js");
 
 const command_prefix = ["f1.", "F1."]
 
 commands = {
-    next: next,
-    n: next
+    schedule: schedule,
+    sched: schedule,
+    s: schedule
 };
 
 module.exports = async function (msg){
