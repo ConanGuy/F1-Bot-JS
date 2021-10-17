@@ -6,6 +6,7 @@
     "ergast-client": "^0.2.9",
     "pandas-js": "^0.2.4",
     "table": "^6.7.2",
-    "text2png": "^2.3.0"
+    "text2png": "^2.3.0",
+    "validate-color": "^2.1.1"
   }
 }

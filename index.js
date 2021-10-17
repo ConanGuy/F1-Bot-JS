@@ -9,7 +9,8 @@ client.login(TOKEN);
 client.on("ready", botReady);
 
 function botReady(){
-    console.log("I'm ready bitch");
+    const date = new Date();
+    console.log(`[${date.toUTCString()}] TestBot has connected to Discord\n`);
 }
 
 const commandHandler = require("./commands/commands")
