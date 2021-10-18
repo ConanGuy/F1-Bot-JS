@@ -100,7 +100,8 @@ class SQL{
 
 async function show_message(message, author, pred, race_id){ 
     if (message != null){
-        await message.delete()
+        try {await message.delete()}
+        catch(error){}
     } 
 
     message = await author.send({content: set_pred_message(pred)})
