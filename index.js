@@ -18,9 +18,10 @@ const commandHandler = require("./commands/commands");
 client.on("messageCreate", getMessage);
 
 function getMessage(message){
-    if(message.channel instanceof Discord.DMChannel){
-        let dmpred = require("./commands/predictions");
-        dmpred(message, message.content.split(" "))
+    if(message.author.bot) return
+    else if(message.channel instanceof Discord.DMChannel){
+        let dmpred = require("./dm_commands/predictions");
+        dmpred(message)
     }
     else{
         commandHandler(message);
