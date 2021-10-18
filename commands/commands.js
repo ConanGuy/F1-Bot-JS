@@ -8,16 +8,15 @@ const qualifs = require("./qualifs.js");
 const pitstops = require("./pitstops.js");
 const next = require("./next.js");
 
-const utils = require("./utils.js")
+const utils = require("../utils.js")
+
 const command_prefix = ["f1.", "F1."]
 
-commands = {
+const commands = {
     schedule: schedule,
-    sched: schedule,
     s: schedule,
     
     result: result,
-    res: result,
     r: result,
     
     drivers: drivers,
@@ -60,7 +59,7 @@ module.exports = async function (msg){
             }
 
             // Execute the command
-            commands[command](msg, tokens);
+            await commands[command](msg, tokens);
 
             break;
         } 

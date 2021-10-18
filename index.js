@@ -13,15 +13,16 @@ function botReady(){
     console.log(`[${date.toUTCString()}] TestBot has connected to Discord\n`);
 }
 
-const commandHandler = require("./commands/commands")
+const commandHandler = require("./commands/commands");
 
 client.on("messageCreate", getMessage);
 
 function getMessage(message){
     if(message.channel instanceof Discord.DMChannel){
-        print("DM:"+message.content)
+        let dmpred = require("./commands/predictions");
+        dmpred(message, message.content.split(" "))
     }
     else{
-        commandHandler(message)
+        commandHandler(message);
     }
 }
