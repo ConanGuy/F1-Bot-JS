@@ -1,5 +1,4 @@
 var ErgastClient = require("ergast-client");
-const { manage_arguments } = require("./utils.js");
 var ergast = new ErgastClient();
 
 const utils = require("./utils.js");
@@ -16,6 +15,7 @@ function schedule(msg, args) {
     ergast.getSeason(year, function(err, season){
         try{
             let data = [];
+            data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
 
             for(let race of season["races"]){
                 let seasonYear = race["season"];
@@ -40,17 +40,16 @@ function schedule(msg, args) {
                         isIn = true
                     }
                 }
-                if (isIn) data.push( [seasonYear, round, gp, circuitName, city, country, date, time] );
+                if (isIn) data.push( row );
             }
 
             let str = utils.array_to_text(data);
-            utils.text_to_image(str);
+            utils.text_to_image(str, args);
 
             utils.send(msg, {files: ["out.png"]});   
         }
-        
         catch(error){
-            utils.send(msg, {content: "Impossible to find a schedule with your parameters"});
+            utils.send({content: "Unknow error"});
         }
     });
 }

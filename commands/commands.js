@@ -1,11 +1,21 @@
 const schedule = require("./schedule.js");
+const result = require("./result.js");
+const drivers = require("./drivers.js");
 
+const utils = require("./utils.js")
 const command_prefix = ["f1.", "F1."]
 
 commands = {
     schedule: schedule,
     sched: schedule,
-    s: schedule
+    s: schedule,
+    
+    result: result,
+    res: result,
+    r: result,
+    
+    drivers: drivers,
+    d: drivers
 };
 
 module.exports = async function (msg){
@@ -21,8 +31,8 @@ module.exports = async function (msg){
             
             // Check if the command is exists
             if(!(command in commands)){
-                console.log(`'${command}' command not found`);
-                break;
+                utils.send(msg, {content: `'${command}' command not found`});
+                return;
             }
 
             // Execute the command
