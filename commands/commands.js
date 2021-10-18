@@ -6,6 +6,7 @@ const driversStandings = require("./driversStandings.js");
 const constructorsStandings = require("./constructorsStandings.js");
 const qualifs = require("./qualifs.js");
 const pitstops = require("./pitstops.js");
+const next = require("./next.js");
 
 const utils = require("./utils.js")
 const command_prefix = ["f1.", "F1."]
@@ -35,7 +36,10 @@ commands = {
     q: qualifs,
 
     pitstops: pitstops,
-    ps: pitstops
+    ps: pitstops,
+
+    next: next,
+    n: next
 };
 
 module.exports = async function (msg){

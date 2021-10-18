@@ -31,7 +31,7 @@ function schedule(msg, args) {
                 time = time.substring(0, time.length-4);
                 time = time.replace(':', 'h')
 
-                let row = [seasonYear, round, gp, circuitName, city, country, date, time];
+                let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
                 let rowStr = row.join(",").toUpperCase();
                 let filtersArr = filters.split(",")
                 let isIn = (filters == "") ? true : false;
