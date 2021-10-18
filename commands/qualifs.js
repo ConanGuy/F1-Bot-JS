@@ -3,7 +3,7 @@ var ergast = new ErgastClient();
 
 const utils = require("./utils.js");
 
-function drivers(msg, args) {
+function qualifs(msg, args) {
     let argsDict = utils.manage_arguments(args);
     if ("error" in argsDict){
         utils.send(msg, {content: argsDict["error"]});
@@ -11,21 +11,22 @@ function drivers(msg, args) {
     }
 
     let year = argsDict["-y"] || "current";
+    let round = argsDict["-r"] || 'last';
     let filters = argsDict["-f"] || "";
-    ergast.getDrivers(year, function(err, drivers){
+    ergast.getQualifyingResults(year, round, function(err, qualifsResults){
         try{
             let data = [];
-            data.push(["ID", "Code", "Number", "First name", "Name", "Birth", "Nationality"]);
-            for (let driver of drivers["drivers"]){
-                let id = driver["driverId"];
-                let number = `${driver["permanentNumber"]}`;
-                let code = driver["code"];
-                let givenName = driver["givenName"];
-                let familyName = driver["familyName"];
-                let dateOfBirth = driver["dateOfBirth"];
-                let nationality = driver["nationality"];
-
-                let row = [id, code, number, givenName, familyName, dateOfBirth.replaceAll("-", "/"), nationality];
+            data.push(["Position", "Driver", "Constructor", "Q1", "Q2", "Q3"]);
+            for (let driver of qualifsResults["driverQualifyingResults"]){
+                let pos = driver["position"];
+                let d = driver["driver"];
+                let dname = d["givenName"]+' '+d["familyName"];
+                let constructor = driver["constructor"]["name"];
+                let q1 = driver["q1"] || "NaN";
+                let q2 = driver["q2"] || "NaN";
+                let q3 = driver["q3"] || "NaN";
+                
+                let row = [pos, dname, constructor, q1, q2, q3];
                 let rowStr = row.join(",").toUpperCase();
                 let filtersArr = filters.split(",")
                 let isIn = (filters == "") ? true : false;
@@ -49,5 +50,5 @@ function drivers(msg, args) {
 }
 
 module.exports = async function (msg, args){
-    drivers(msg, args)
+    qualifs(msg, args)
 }

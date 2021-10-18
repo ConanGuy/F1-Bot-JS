@@ -3,7 +3,7 @@ var ergast = new ErgastClient();
 
 const utils = require("./utils.js");
 
-function drivers(msg, args) {
+function constructorsStandings(msg, args) {
     let argsDict = utils.manage_arguments(args);
     if ("error" in argsDict){
         utils.send(msg, {content: argsDict["error"]});
@@ -11,21 +11,19 @@ function drivers(msg, args) {
     }
 
     let year = argsDict["-y"] || "current";
+    let round = argsDict["-r"] || "last";
     let filters = argsDict["-f"] || "";
-    ergast.getDrivers(year, function(err, drivers){
+    ergast.getConstructorStandingsAfterRound(year,round, function(err, standing){
         try{
             let data = [];
-            data.push(["ID", "Code", "Number", "First name", "Name", "Birth", "Nationality"]);
-            for (let driver of drivers["drivers"]){
-                let id = driver["driverId"];
-                let number = `${driver["permanentNumber"]}`;
-                let code = driver["code"];
-                let givenName = driver["givenName"];
-                let familyName = driver["familyName"];
-                let dateOfBirth = driver["dateOfBirth"];
-                let nationality = driver["nationality"];
+            data.push(["Position", "Points", "Constructor", "Wins"]);
+            for (let constructor of standing["standings"]){
+                let pos = constructor["position"];
+                let points = constructor["points"];
+                let c = constructor["constructor"]["name"];
+                let wins = constructor["wins"];
 
-                let row = [id, code, number, givenName, familyName, dateOfBirth.replaceAll("-", "/"), nationality];
+                let row = [pos, points, c, wins];
                 let rowStr = row.join(",").toUpperCase();
                 let filtersArr = filters.split(",")
                 let isIn = (filters == "") ? true : false;
@@ -49,5 +47,5 @@ function drivers(msg, args) {
 }
 
 module.exports = async function (msg, args){
-    drivers(msg, args)
+    constructorsStandings(msg, args)
 }

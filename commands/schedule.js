@@ -10,7 +10,7 @@ function schedule(msg, args) {
         return
     }
 
-    let year = argsDict["-y"] || new Date().getYear() + 1900;
+    let year = argsDict["-y"] || "current";
     let filters = argsDict["-f"] || "";
     ergast.getSeason(year, function(err, season){
         try{

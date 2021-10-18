@@ -81,6 +81,7 @@ module.exports = {
             "-y": {"nbParams": 1, "condition": "Number.isInteger(parseInt(params[0]))", "return": "params[0]"},
             "-f": {"nbParams": 1, "condition": "true", "return": "params[0]"},
             "-r": {"nbParams": 1, "condition": "Number.isInteger(parseInt(params[0]))", "return": "params[0]"},
+            "-p": {"nbParams": 1, "condition": "Number.isInteger(parseInt(params[0]))", "return": "params[0]"},
 
             "--table": {"nbParams": 0, "condition": "true", "return": "true"},
 

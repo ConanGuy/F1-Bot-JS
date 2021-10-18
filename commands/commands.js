@@ -1,6 +1,11 @@
 const schedule = require("./schedule.js");
 const result = require("./result.js");
 const drivers = require("./drivers.js");
+const constructors = require("./constructors.js");
+const driversStandings = require("./driversStandings.js");
+const constructorsStandings = require("./constructorsStandings.js");
+const qualifs = require("./qualifs.js");
+const pitstops = require("./pitstops.js");
 
 const utils = require("./utils.js")
 const command_prefix = ["f1.", "F1."]
@@ -15,7 +20,22 @@ commands = {
     r: result,
     
     drivers: drivers,
-    d: drivers
+    d: drivers,
+    
+    constructors: constructors,
+    c: constructors,
+    
+    scoreboard: driversStandings,
+    sb: driversStandings,
+    
+    scoreboard_constructor: constructorsStandings,
+    sbc: constructorsStandings,
+    
+    qualifs: qualifs,
+    q: qualifs,
+
+    pitstops: pitstops,
+    ps: pitstops
 };
 
 module.exports = async function (msg){

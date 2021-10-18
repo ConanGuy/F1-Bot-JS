@@ -10,7 +10,7 @@ function result(msg, args) {
         return
     }
 
-    let year = argsDict["-y"] || new Date().getYear() + 1900;
+    let year = argsDict["-y"] || "current";
     let round = argsDict["-r"] || 'last';
     let filters = argsDict["-f"] || "";
     ergast.getRaceResults(year, round, function(err, raceResults){

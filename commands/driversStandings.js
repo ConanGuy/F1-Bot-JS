@@ -3,7 +3,7 @@ var ergast = new ErgastClient();
 
 const utils = require("./utils.js");
 
-function drivers(msg, args) {
+function driversStandings(msg, args) {
     let argsDict = utils.manage_arguments(args);
     if ("error" in argsDict){
         utils.send(msg, {content: argsDict["error"]});
@@ -11,21 +11,21 @@ function drivers(msg, args) {
     }
 
     let year = argsDict["-y"] || "current";
+    let round = argsDict["-r"] || "last";
     let filters = argsDict["-f"] || "";
-    ergast.getDrivers(year, function(err, drivers){
+    ergast.getDriverStandingsAfterRound(year,round, function(err, standing){
         try{
             let data = [];
-            data.push(["ID", "Code", "Number", "First name", "Name", "Birth", "Nationality"]);
-            for (let driver of drivers["drivers"]){
-                let id = driver["driverId"];
-                let number = `${driver["permanentNumber"]}`;
-                let code = driver["code"];
-                let givenName = driver["givenName"];
-                let familyName = driver["familyName"];
-                let dateOfBirth = driver["dateOfBirth"];
-                let nationality = driver["nationality"];
+            data.push(["Position", "Points", "Name", "Constructor", "Wins"]);
+            for (let driver of standing["standings"]){
+                let pos = driver["position"];
+                let points = driver["points"];
+                let d = driver["driver"];
+                let name = d["givenName"] + " " + d["familyName"]
+                let constructor = driver["constructor"]["name"];
+                let wins = driver["wins"];
 
-                let row = [id, code, number, givenName, familyName, dateOfBirth.replaceAll("-", "/"), nationality];
+                let row = [pos, points, name, constructor, wins];
                 let rowStr = row.join(",").toUpperCase();
                 let filtersArr = filters.split(",")
                 let isIn = (filters == "") ? true : false;
@@ -49,5 +49,5 @@ function drivers(msg, args) {
 }
 
 module.exports = async function (msg, args){
-    drivers(msg, args)
+    driversStandings(msg, args)
 }
