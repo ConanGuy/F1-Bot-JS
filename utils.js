@@ -1,3 +1,6 @@
+const sqlite3 = require('sqlite3')
+const DRIVERS = ["HAM","BOT","VER","PER","SAI","LEC","RIC","NOR","ALO","OCO","GAS","TSU","VET","STR","MAZ","MSC","LAT","RUS","RAI","GIO"]
+
 function isColor(strColor){
     var validateColor = require("validate-color");
     if (strColor.split(",").length == 3){
@@ -21,6 +24,70 @@ const arrToInstanceCountObj = arr => arr.reduce((obj, e) => {
     obj[e] = (obj[e] || 0) + 1;
     return obj;
   }, {});
+  
+class SQL{
+
+    static db = new sqlite3.Database("preds.sql", (err) => {
+        if (err) {
+        console.log('Could not connect to database', err)
+        }
+    })
+
+    static async get_preds(options){
+        return new Promise((resolve, reject) => {
+            SQL.db.get("SELECT * FROM PREDICTIONS WHERE user_id = ? AND race_id = ?", options, (err, result) => {
+                if (err) {
+                    reject(err)
+                } 
+                else {
+                    resolve(result)
+                }
+            });
+        });
+    }
+    
+    static async add_user(options){
+        return new Promise((resolve, reject) => {
+            SQL.db.run("INSERT INTO PREDICTIONS(user_id, race_id) VALUES(?, ?)", options, function (err) {
+                if (err) {
+                    console.log('Error running sql ' + sql)
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve({ id: this.lastID })
+                }
+            });
+        });
+    }
+    
+    static async update_message_id(options){
+        return new Promise((resolve, reject) => {
+            SQL.db.run("UPDATE PREDICTIONS SET message_id = ? WHERE user_id = ? AND race_id = ?", options, function (err) {
+                if (err) {
+                    console.log('Error running sql ' + sql)
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve({ id: this.lastID })
+                }
+            });
+        });
+    }
+
+    static async update_pred(options){
+        return new Promise((resolve, reject) => {
+            SQL.db.run("UPDATE PREDICTIONS SET pred = ? WHERE user_id = ? AND race_id = ?", options, function (err) {
+                if (err) {
+                    console.log('Error running sql ' + sql)
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve({ id: this.lastID })
+                }
+            });
+        });
+    }
+}
 
 module.exports = {
     text_to_image: function (text, args){
@@ -117,5 +184,48 @@ module.exports = {
         }
 
         return ret; 
-    }
+    },
+        
+    set_pred_message: function(pred){
+        let s = "```"
+
+        let strPred = []
+        for (const[idx, driver] of pred.entries()){
+            strPred.push((idx+1 < 10 ? "0" : "")+(idx+1)+"-"+driver)
+        }
+
+        let nbCols = 2
+        let nbRows = parseInt(pred.length/nbCols)
+        for (let i = 0; i < nbRows; i++){
+            s += "\n"+strPred.slice(i*nbCols, i*nbCols+nbCols).join('  |  ')
+        }
+
+        let left = []
+        for (const d of DRIVERS){
+            if (!(pred.includes(d))) left.push(d);
+        }
+
+        if (left.length > 0){
+            s += "\n\nLEFT: "+left.join(",")
+        }
+
+        s += "```"
+
+        return s
+    },
+
+    predStr: function(pred){
+        s = "["
+
+        for (const d of pred){
+            s += `'${d}',`
+        }
+
+        s = s.substring(0, s.length-1)
+        s+= ']'
+
+        return s
+    },
+
+    SQL: SQL    
 }
