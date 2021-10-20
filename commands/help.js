@@ -92,7 +92,7 @@ const commandsAliases = {
 function help(msg, args) {
     let cmd = args[0] || "help"
 
-    if (cmd = "help"){
+    if (cmd == "help"){
         let cmds = []
         for (const c of Object.keys(helpCommands)){
             cmds.push("`"+c+"`")
