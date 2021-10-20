@@ -6,22 +6,22 @@ const helpCommands = {
     "constructors": {
         "Aliases": ["constructors", "c"],
         "Description": ["Get details about constructors of a season"],
-        "Options": ["-y", "-f"]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
     },
     "constructorsStandings": {
         "Aliases": ["scoreboard_constructors", "sbc"],
         "Description": ["Get the constructors standings of a season after a specific round"],
-        "Options": ["-y", "-r", "-f"]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "drivers": {
         "Aliases": ["drivers", "d"],
         "Description": ["Get details about drivers of a season"],
-        "Options": ["-y", "-f"]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
     },
     "driversStandings": {
         "Aliases": ["scoreboard", "sb"],
         "Description": ["Get the drivers standings of a season after a specific round"],
-        "Options": ["-y", "-r", "-f"]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "next": {
         "Aliases": ["next", "n"],
@@ -31,7 +31,7 @@ const helpCommands = {
     "pitstops": {
         "Aliases": ["pitstops", "ps"],
         "Description": ["Get details about pitstops of a race"],
-        "Options": ["-y", "-r", "-f"]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "predictions": {
         "Aliases": ["predictions", "p"],
@@ -41,17 +41,17 @@ const helpCommands = {
     "qualifs": {
         "Aliases": ["qualifs", "q"],
         "Description": ["Get details about qualifications of a race"],
-        "Options": ["-y", "-r", "-f"]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "results": {
         "Aliases": ["results", "r"],
         "Description": ["Get results of a race"],
-        "Options": ["-y", "-r", "-f"]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "schedule": {
         "Aliases": ["schedule", "s"],
         "Description": ["Get schedule of a season"],
-        "Options": ["-y", "-f"]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
     }
 }
 
