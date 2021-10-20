@@ -1,5 +1,5 @@
 const schedule = require("./schedule.js");
-const result = require("./result.js");
+const results = require("./results.js");
 const drivers = require("./drivers.js");
 const constructors = require("./constructors.js");
 const driversStandings = require("./driversStandings.js");
@@ -8,6 +8,7 @@ const qualifs = require("./qualifs.js");
 const pitstops = require("./pitstops.js");
 const next = require("./next.js");
 const predictions = require("./predictions.js")
+const help = require("./help.js")
 
 const utils = require("../utils.js");
 
@@ -17,8 +18,8 @@ const commands = {
     schedule: schedule,
     s: schedule,
     
-    result: result,
-    r: result,
+    results: results,
+    r: results,
     
     drivers: drivers,
     d: drivers,
@@ -29,7 +30,7 @@ const commands = {
     scoreboard: driversStandings,
     sb: driversStandings,
     
-    scoreboard_constructor: constructorsStandings,
+    scoreboard_constructors: constructorsStandings,
     sbc: constructorsStandings,
     
     qualifs: qualifs,
@@ -42,7 +43,9 @@ const commands = {
     n: next,
 
     predictions: predictions,
-    p: predictions
+    p: predictions,
+
+    help: help
 };
 
 module.exports = async function (msg){

@@ -3,7 +3,7 @@ var ergast = new ErgastClient();
 
 const utils = require("../utils.js");
 
-function result(msg, args) {
+function results(msg, args) {
     let argsDict = utils.manage_arguments(args);
     if ("error" in argsDict){
         utils.send(msg, {content: argsDict["error"]});
@@ -53,5 +53,5 @@ function result(msg, args) {
 }
 
 module.exports = async function (msg, args){
-    result(msg, args)
+    results(msg, args)
 }
