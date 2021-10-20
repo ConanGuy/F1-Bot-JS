@@ -6,32 +6,32 @@ const helpCommands = {
     "constructors": {
         "Aliases": ["constructors", "c"],
         "Description": ["Get details about constructors of a season"],
-        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     },
     "constructorsStandings": {
         "Aliases": ["scoreboard_constructors", "sbc"],
         "Description": ["Get the constructors standings of a season after a specific round"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     },
     "drivers": {
         "Aliases": ["drivers", "d"],
         "Description": ["Get details about drivers of a season"],
-        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     },
     "driversStandings": {
         "Aliases": ["scoreboard", "sb"],
         "Description": ["Get the drivers standings of a season after a specific round"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     },
     "next": {
         "Aliases": ["next", "n"],
         "Description": ["Get details about the next race"],
-        "Options": ["--table"]
+        "Options": ["--table", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT"]
     },
     "pitstops": {
         "Aliases": ["pitstops", "ps"],
         "Description": ["Get details about pitstops of a race"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     },
     "predictions": {
         "Aliases": ["predictions", "p"],
@@ -41,17 +41,17 @@ const helpCommands = {
     "qualifs": {
         "Aliases": ["qualifs", "q"],
         "Description": ["Get details about qualifications of a race"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     },
     "results": {
         "Aliases": ["results", "r"],
         "Description": ["Get results of a race"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     },
     "schedule": {
         "Aliases": ["schedule", "s"],
         "Description": ["Get schedule of a season"],
-        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     }
 }
 
