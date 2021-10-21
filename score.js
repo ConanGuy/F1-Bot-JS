@@ -60,7 +60,7 @@ async function send_result(client){
     let guildsManager = await client.guilds.fetch()
     for (const g of guildsManager){
         let guild = await client.guilds.fetch(g[0])
-        console.log(guild.name)
+
         
         ergast.getRace(year, round, async function(err, race){
             try{
@@ -134,8 +134,10 @@ async function send_result(client){
             .setTimestamp()
 
             await channel.send({embeds: [embed]})
+            console.log(`[${guild.name} @${new Date().toUTCString()}] Results for race ${desc} arrived !!`)
         })
     }
+    console.log("")
 }
 
 async function get_new_results(client){

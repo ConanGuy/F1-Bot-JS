@@ -139,6 +139,7 @@ module.exports = {
         const channels = await guild.channels.fetch()
         let channel
         for (const c of channels){
+            console.log(c)
             if (c[1].type == "GUILD_TEXT"){
                 channel = c[1]
                 break
@@ -199,7 +200,7 @@ module.exports = {
         
         msg.channel.send(kwargs);
     },
-
+    
     manage_arguments: function(args){
         const argsParameters = {
             "-y": {"nbParams": 1, "condition": "Number.isInteger(parseInt(params[0]))", "return": "params[0]"},

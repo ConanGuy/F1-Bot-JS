@@ -1,5 +1,8 @@
 require('dotenv').config();
 const preds_threads = require("./score.js")
+const utils = require("./utils");
+const SQL = utils.SQL;
+const help = require("./commands/help.js")
 
 const TOKEN = process.env.TOKEN;
 
@@ -10,7 +13,7 @@ client.login(TOKEN);
 client.on("ready", botReady);
 
 
-function botReady(){
+async function botReady(){
     const date = new Date();
     console.log(`[${date.toUTCString()}] ${client.user.username} has connected to Discord\n`);
 
@@ -28,7 +31,7 @@ const commandHandler = require("./commands/commands");
 
 client.on("messageCreate", getMessage);
 
-function getMessage(message){
+async function getMessage(message){
     if(message.author.bot) return
     else if(message.channel instanceof Discord.DMChannel){
         let dmpred = require("./dm_commands/predictions");
@@ -38,3 +41,16 @@ function getMessage(message){
         commandHandler(message);
     }
 }
+
+//joined a server
+client.on("guildCreate", guildJoin)
+
+async function guildJoin(guild){
+    let res = await SQL.get("SELECT * FROM PREDS_CHANNEL WHERE guild_id = "+guild.id)
+    if (res === undefined){
+        let channel = await utils.get_default_channel(guild)
+        await SQL.get("INSERT INTO PREDS_CHANNEL VALUES(?, ?)",[guild.id, channel.id])
+    }
+}
+
+// https://discord.com/api/oauth2/authorize?client_id=892318238355095562&permissions=3072&scope=bot
