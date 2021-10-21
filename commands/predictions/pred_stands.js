@@ -33,7 +33,7 @@ async function pred_stands(msg, args) {
             let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
             data.push( row );
             
-            var desc = `${row[2]} - ${row[4]}, ${row[5]} - ${row[6]} ${row[7]}`
+            var desc = `${row[2]} - ${row[4]}, ${row[5]}\n${row[6]} ${row[7]}`
         }
         catch(error){
             return await utils.send(msg, {content: "Unknow error"});

@@ -17,7 +17,7 @@ async function botReady(){
     const date = new Date();
     console.log(`[${date.toUTCString()}] ${client.user.username} has connected to Discord\n`);
 
-    const interval = 2 * 1000; // Every 10min
+    const interval = 10 * 60 * 1000; // Every 10min
     var thread_results = function() {
         setInterval(function() {
             preds_threads.get_new_results(client);

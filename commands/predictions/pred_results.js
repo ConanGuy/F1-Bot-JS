@@ -48,7 +48,7 @@ async function pred_results(msg, args) {
             let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
             data.push( row );
             
-            var ret = `${row[2]} - ${row[4]}, ${row[5]} - ${row[6]} ${row[7]}`
+            var ret = `${row[2]} - ${row[4]}, ${row[5]}\n${row[6]} ${row[7]}`
         }
         catch(error){
             await utils.send(msg, {content: "Unknow error"});
