@@ -100,21 +100,46 @@ class SQL{
 }
 
 module.exports = {
-    get_stand_str: function (res, membersList){
+    get_stand_str: function (res, membersList, user_id=null, top=false){
         const maxLen = 16
+        const maxShow = 5
 
         if (res.length == 0)
             return "No data found"
-        let len = res.length.toString().length
-        if (len == 1) len = 2
+
+        let userIdx = 0
+        if(user_id != null){
+            for (const [idx, s] of res.entries()){
+                if (s["user_id"] == user_id){
+                    userIdx = idx
+                    break
+                }
+            }
+        }
+
+        let start = 0
+        let end = res.length
+        if (userIdx > 2 && res.length > maxShow) start = userIdx - 2
+        if (start > res.length-maxShow && res.length > maxShow) start = res.length-maxShow
+        if (userIdx < res.length-2 && res.length > maxShow) end = start + 5
+
+        if (top){
+            start = 0
+            end = maxShow
+        }
+
+        let lenStr = res.length.toString().length
+        if (lenStr == 1) lenStr = 2
+
         let str = "```"
-        for (const s of res){
+        str += (start>0) ? "... \n" : " \n"
+        for (const s of res.slice(start, end)){
             let rank = s["rank"]
             let user_id = s["user_id"]
             let points = s["points"]
             var cnt = s["races"] || ""
 
-            let rankStr = "0".repeat(len-rank.toString().length)+rank
+            let rankStr = "0".repeat(lenStr-rank.toString().length)+rank
             let username = membersList[user_id].displayName
             let memberStr = (username.length + rankStr.length+2 + 1 > maxLen) ? username.substr(0, maxLen-rankStr.length-4)+"..." : username
             let firstLine = `${rankStr}- ${memberStr}:`
@@ -132,6 +157,7 @@ module.exports = {
             str += thirdLine
             str += "\n"
         }
+        str += (end<res.length-1 && res.length > maxShow) ? "...\n" : " \n"
         return str.substring(0, str.length - 1)+"```"
     },
 
@@ -210,6 +236,7 @@ module.exports = {
 
             "--table": {"nbParams": 0, "condition": "true", "return": "true"},
             "--global": {"nbParams": 0, "condition": "true", "return": "true"},
+            "--top": {"nbParams": 0, "condition": "true", "return": "true"},
 
             "-col": {"nbParams": 1, "condition": "isColor(params[0])", "return": "params[0]"},
             "-bg": {"nbParams": 1, "condition": "isColor(params[0])", "return": "params[0]"},

@@ -10,6 +10,26 @@ async function pred_stands(msg, args) {
     let year = argsDict["-y"] || "current";
     let round = argsDict["-r"] || "last";
     let global = argsDict["--global"] || false;
+    let top = argsDict["--top"] || false;
+
+    let arg0 = args[0] || ""
+    arg0 = arg0.replace(/\D/g, "")
+    
+    try{
+        if(arg0 == "") throw "Error"
+        var user = (await msg.guild.members.fetch(arg0)).user
+        var user_id = user.id
+    }
+    catch(error) {
+        var user_id =  argsDict["-u"] || msg.author.id
+        user_id = user_id.replace(/\D/g, "")
+        
+        try{ var user = (await msg.guild.members.fetch(user_id)).user }
+        catch(error) { 
+            var user = msg.author
+            top = true 
+        }
+    }
 
     let guild = msg.guild
     ergast.getRace(year, round, async function(err, race){
@@ -49,8 +69,6 @@ async function pred_stands(msg, args) {
 
             membersList[member.id] = member
         }
-        
-        let channel = msg.channel
 
         if (year == "current") year = ""
         if (round == "last") round = ""
@@ -67,13 +85,14 @@ async function pred_stands(msg, args) {
             desc = "Global ranking"
         }
 
-        let strTot = utils.get_stand_str(standTot, membersList)
-        let strGood = utils.get_stand_str(standGood, membersList)
-        let strDist = utils.get_stand_str(standDist, membersList)
+        let strTot = utils.get_stand_str(standTot, membersList, user_id, top)
+        let strGood = utils.get_stand_str(standGood, membersList, user_id, top)
+        let strDist = utils.get_stand_str(standDist, membersList, user_id, top)
+
+        console.log(user)
 
         const embed = new MessageEmbed()
         .setColor('#0099ff')
-        .setAuthor(msg.client.user.tag, msg.client.user.defaultAvatarURL)
         .setTitle("Ranking: ")
         .setDescription(desc)
         .addFields(
@@ -82,6 +101,10 @@ async function pred_stands(msg, args) {
             { name: 'Ranks distance:', value: strDist, inline: true}
         )
         .setTimestamp()
+
+
+
+        if (!top) embed.setAuthor(user.tag, await user.avatarURL())
 
         await utils.send(msg, {embeds: [embed]})
     })

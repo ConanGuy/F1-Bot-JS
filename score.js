@@ -117,13 +117,12 @@ async function send_result(client){
             var standGood = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY drivers_good DESC) as rank, drivers_good as points, user_id FROM TOTAL_SCORE WHERE race_id = (SELECT MAX(race_id) FROM TOTAL_SCORE WHERE race_id LIKE '"+year+"%"+round+"') and user_id in ("+ids+")")
             var standDist = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY drivers_distance DESC) as rank, drivers_distance as points, user_id FROM TOTAL_SCORE WHERE race_id = (SELECT MAX(race_id) FROM TOTAL_SCORE WHERE race_id LIKE '"+year+"%"+round+"') and user_id in ("+ids+")")
 
-            let strTot = utils.get_stand_str(standTot, membersList)
-            let strGood = utils.get_stand_str(standGood, membersList)
-            let strDist = utils.get_stand_str(standDist, membersList)
+            let strTot = utils.get_stand_str(standTot, membersList, top=true)
+            let strGood = utils.get_stand_str(standGood, membersList, top=true)
+            let strDist = utils.get_stand_str(standDist, membersList, top=true)
 
             const embed = new MessageEmbed()
             .setColor('#0099ff')
-            .setAuthor(client.user.tag, client.user.defaultAvatarURL)
             .setTitle("Ranking: ")
             .setDescription(desc)
             .addFields(
