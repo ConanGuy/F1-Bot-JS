@@ -97,7 +97,7 @@ async function send_result(client){
                 let member = await guild.members.fetch(m[0])
                 ids.push(member.id)
 
-                membersList[member.id] = member.user
+                membersList[member.id] = member
             }
             
             let chan = await SQL.get("SELECT channel_id FROM PREDS_CHANNEL WHERE guild_id = "+guild.id)

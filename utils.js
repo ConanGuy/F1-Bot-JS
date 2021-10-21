@@ -115,16 +115,16 @@ module.exports = {
             var cnt = s["races"] || ""
 
             let rankStr = "0".repeat(len-rank.toString().length)+rank
-            let username = membersList[user_id].username
+            let username = membersList[user_id].displayName
             let memberStr = (username.length + rankStr.length+2 + 1 > maxLen) ? username.substr(0, maxLen-rankStr.length-4)+"..." : username
             let firstLine = `${rankStr}- ${memberStr}:`
-            firstLine += " ".repeat(maxLen-firstLine.length)
+            if(maxLen-firstLine.length > 0) firstLine += " ".repeat(maxLen-firstLine.length)
     
             let pointsStr = `${points} points`
-            pointsStr = " ".repeat(maxLen-pointsStr.length) + pointsStr
+            if(maxLen-pointsStr.length > 0) pointsStr = " ".repeat(maxLen-pointsStr.length) + pointsStr
 
             let racesStr = cnt+" races "
-            racesStr = " ".repeat(maxLen-racesStr.length) + racesStr
+            if(maxLen-racesStr.length > 0) racesStr = " ".repeat(maxLen-racesStr.length) + racesStr
             let thirdLine = (cnt != "" ? "\n"+racesStr : "") 
 
             str += firstLine+"\n" 

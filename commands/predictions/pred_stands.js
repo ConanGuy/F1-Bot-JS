@@ -47,7 +47,7 @@ async function pred_stands(msg, args) {
             let member = await guild.members.fetch(m[0])
             ids.push(member.id)
 
-            membersList[member.id] = member.user
+            membersList[member.id] = member
         }
         
         let channel = msg.channel
