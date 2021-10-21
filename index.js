@@ -1,4 +1,5 @@
 require('dotenv').config();
+const preds_threads = require("./score.js")
 
 const TOKEN = process.env.TOKEN;
 
@@ -8,9 +9,19 @@ client.login(TOKEN);
 
 client.on("ready", botReady);
 
+
 function botReady(){
     const date = new Date();
     console.log(`[${date.toUTCString()}] TestBot has connected to Discord\n`);
+
+    const interval = 2 * 1000; // Every 10min
+    var thread_results = function() {
+        setInterval(function() {
+            preds_threads.get_new_results(client);
+        }, interval);
+    }
+
+    thread_results()
 }
 
 const commandHandler = require("./commands/commands");

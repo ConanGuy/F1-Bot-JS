@@ -33,9 +33,9 @@ class SQL{
         }
     })
 
-    static async get_preds(options){
+    static async all(sql, options){
         return new Promise((resolve, reject) => {
-            SQL.db.get("SELECT * FROM PREDICTIONS WHERE user_id = ? AND race_id = ?", options, (err, result) => {
+            SQL.db.all(sql, options, (err, result) => {
                 if (err) {
                     reject(err)
                 } 
@@ -45,33 +45,43 @@ class SQL{
             });
         });
     }
-    
-    static async add_user(options){
+
+    static async get(sql, options){
         return new Promise((resolve, reject) => {
-            SQL.db.run("INSERT INTO PREDICTIONS(user_id, race_id) VALUES(?, ?)", options, function (err) {
+            SQL.db.get(sql, options, (err, result) => {
                 if (err) {
-                    console.log('Error running sql ' + sql)
-                    console.log(err)
                     reject(err)
-                } else {
-                    resolve({ id: this.lastID })
+                } 
+                else {
+                    resolve(result)
                 }
             });
         });
     }
-    
-    static async update_message_id(options){
+
+    static async run(sql, options){
         return new Promise((resolve, reject) => {
-            SQL.db.run("UPDATE PREDICTIONS SET message_id = ? WHERE user_id = ? AND race_id = ?", options, function (err) {
+            SQL.db.run(sql, options, (err, result) => {
                 if (err) {
-                    console.log('Error running sql ' + sql)
-                    console.log(err)
                     reject(err)
-                } else {
-                    resolve({ id: this.lastID })
+                } 
+                else {
+                    resolve(result)
                 }
             });
         });
+    }
+
+    static async get_preds(options){
+        return await SQL.get("SELECT * FROM PREDICTIONS WHERE user_id = ? AND race_id = ?", options)
+    }
+    
+    static async add_user(options){
+        return await SQL.run("INSERT INTO PREDICTIONS(user_id, race_id) VALUES(?, ?)", options);
+    }
+    
+    static async update_message_id(options){
+        return await SQL.run("UPDATE PREDICTIONS SET message_id = ? WHERE user_id = ? AND race_id = ?", options);
     }
 
     static async update_pred(options){
@@ -90,6 +100,18 @@ class SQL{
 }
 
 module.exports = {
+    get_default_channel: async function (guild){
+        const channels = await guild.channels.fetch()
+        let channel
+        for (const c of channels){
+            if (c[1].type == "GUILD_TEXT"){
+                channel = c[1]
+                break
+            }
+        }
+        return channel
+    },
+
     text_to_image: function (text, args){
         var fs = require('fs');
         var text2png = require('text2png');
