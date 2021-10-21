@@ -4,13 +4,14 @@ const { MessageEmbed } = require('discord.js');
 var ErgastClient = require("ergast-client");
 var ergast = new ErgastClient();
 
-async function command(msg, args) {
+async function pred_stands(msg, args) {
     let argsDict = utils.manage_arguments(args);
     
     let year = argsDict["-y"] || "current";
     let round = argsDict["-r"] || "last";
     let global = argsDict["--global"] || false;
 
+    let guild = msg.guild
     ergast.getRace(year, round, async function(err, race){
         try{
             let data = [];
@@ -38,7 +39,6 @@ async function command(msg, args) {
             return await utils.send(msg, {content: "Unknow error"});
         }
 
-        let guild = msg.guild
         let members = await guild.members.list({limit:1000})
 
         let ids = []  
@@ -50,15 +50,7 @@ async function command(msg, args) {
             membersList[member.id] = member.user
         }
         
-        let chan = await SQL.get("SELECT channel_id FROM PREDS_CHANNEL WHERE guild_id = "+guild.id)
-        
-        let channel
-        try { 
-            channel = await guild.channels.fetch(chan["channel_id"].toString())
-        }
-        catch (err){
-            channel = utils.get_default_channel(guild)
-        }
+        let channel = msg.channel
 
         if (year == "current") year = ""
         if (round == "last") round = ""
@@ -75,25 +67,13 @@ async function command(msg, args) {
             desc = "Global ranking"
         }
 
-        function get_stand_str(res){
-            if (res.length == 0)
-                return "No data found"
-            let str = ""
-            for (const s of res){
-                let rank = s["rank"]
-                let user_id = s["user_id"]
-                let points = s["points"]
-                var cnt = s["races"] || ""
-                str += `${rank}- ${membersList[user_id].username} (${points} points)` + (cnt != "" ? " for "+cnt+" races" : "") + "\n"
-            }
-            return str.substring(0, str.length - 1)
-        }
-
-        let strTot = get_stand_str(standTot)
-        let strGood = get_stand_str(standGood)
-        let strDist = get_stand_str(standDist)
+        let strTot = utils.get_stand_str(standTot, membersList)
+        let strGood = utils.get_stand_str(standGood, membersList)
+        let strDist = utils.get_stand_str(standDist, membersList)
 
         const embed = new MessageEmbed()
+        .setColor('#0099ff')
+        .setAuthor(msg.client.user.tag, msg.client.user.defaultAvatarURL)
         .setTitle("Ranking: ")
         .setDescription(desc)
         .addFields(
@@ -103,10 +83,10 @@ async function command(msg, args) {
         )
         .setTimestamp()
 
-        await channel.send({embeds: [embed]})
+        await utils.send(msg, {embeds: [embed]})
     })
 }
 
 module.exports = async function (msg, args){
-    await command(msg, args)
+    await pred_stands(msg, args)
 }

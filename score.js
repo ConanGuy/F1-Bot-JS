@@ -51,51 +51,90 @@ async function send_result(client){
 
     let race_id = res["race_id"].toString()
 
+    let year = race_id.substr(0, 4)
+    let round = race_id.substr(4, 2)
+
     let drivers = eval(res["drivers"])
     let constructors = eval(res["constructors"])
 
     let guildsManager = await client.guilds.fetch()
     for (const g of guildsManager){
         let guild = await client.guilds.fetch(g[0])
-        let members = await guild.members.list({limit:1000})
-
-        let ids = []  
-        let membersList = {}      
-        for (const m of members){
-            let member = await guild.members.fetch(m[0])
-            ids.push(member.id)
-
-            membersList[member.id] = member.user
-        }
-
-        let stand = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY points DESC) as rank, * FROM TOTAL_SCORE WHERE race_id="+race_id+" and user_id in ("+ids+")")
-        let chan = await SQL.get("SELECT channel_id FROM PREDS_CHANNEL WHERE guild_id = "+guild.id)
+        console.log(guild.name)
         
-        let channel
-        try { 
-            channel = await guild.channels.fetch(chan["channel_id"].toString())
-        }
-        catch (err){
-            channel = utils.get_default_channel(guild)
-        }
+        ergast.getRace(year, round, async function(err, race){
+            try{
+                let data = [];
+                data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
 
-        let str = ""
-        for (const s of stand){
-            let rank = s["rank"]
-            let user_id = s["user_id"]
-            let points = s["points"]
-            str += `${rank}- ${membersList[user_id].username} (${points} points)\n`
-        }
-        str = str.substring(0, str.length - 1)
+                let seasonYear = race["season"];
+                let round = race["round"];
+                let gp = race["raceName"];
+                let circuit = race["circuit"];
+                let circuitName = circuit["circuitName"];
+                let location = circuit["location"];
+                let city = location["locality"];
+                let country = location["country"];
+                let date = race["date"];
+                let time = race["time"];
+                time = time.substring(0, time.length-4);
+                time = time.replace(':', 'h')
 
-        const embed = new MessageEmbed()
-        .setTitle("Ranking: ")
-        .addFields(
-            { name: 'Ranks', value: str}
-        )
-        .setTimestamp()
+                let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
+                data.push( row );
+                
+                var desc = `${row[2]} - ${row[4]}, ${row[5]} - ${row[6]} ${row[7]}`
+            }
+            catch(error){
+                return console.log('Error on score race data');
+            }
 
-        channel.send({embeds: [embed]})
+            let members = await guild.members.list({limit:1000})
+
+            let ids = []  
+            let membersList = {}      
+            for (const m of members){
+                let member = await guild.members.fetch(m[0])
+                ids.push(member.id)
+
+                membersList[member.id] = member.user
+            }
+            
+            let chan = await SQL.get("SELECT channel_id FROM PREDS_CHANNEL WHERE guild_id = "+guild.id)
+            
+            let channel
+            try { 
+                channel = await guild.channels.fetch(chan["channel_id"].toString())
+            }
+            catch (err){
+                channel = utils.get_default_channel(guild)
+            }
+
+            if (year == "current") year = ""
+            if (round == "last") round = ""
+
+            var standTot = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY points DESC) as rank, points as points, user_id FROM TOTAL_SCORE WHERE race_id = (SELECT MAX(race_id) FROM TOTAL_SCORE WHERE race_id LIKE '"+year+"%"+round+"') and user_id in ("+ids+")")
+            var standGood = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY drivers_good DESC) as rank, drivers_good as points, user_id FROM TOTAL_SCORE WHERE race_id = (SELECT MAX(race_id) FROM TOTAL_SCORE WHERE race_id LIKE '"+year+"%"+round+"') and user_id in ("+ids+")")
+            var standDist = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY drivers_distance DESC) as rank, drivers_distance as points, user_id FROM TOTAL_SCORE WHERE race_id = (SELECT MAX(race_id) FROM TOTAL_SCORE WHERE race_id LIKE '"+year+"%"+round+"') and user_id in ("+ids+")")
+
+            let strTot = utils.get_stand_str(standTot, membersList)
+            let strGood = utils.get_stand_str(standGood, membersList)
+            let strDist = utils.get_stand_str(standDist, membersList)
+
+            const embed = new MessageEmbed()
+            .setColor('#0099ff')
+            .setAuthor(client.user.tag, client.user.defaultAvatarURL)
+            .setTitle("Ranking: ")
+            .setDescription(desc)
+            .addFields(
+                { name: 'Ranks total:', value: strTot, inline: true},
+                { name: 'Ranks good position:', value: strGood, inline: true},
+                { name: 'Ranks distance:', value: strDist, inline: true}
+            )
+            .setTimestamp()
+
+            await channel.send({embeds: [embed]})
+        })
     }
 }
 

@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 var ErgastClient = require("ergast-client");
 var ergast = new ErgastClient();
 
-async function command(msg, args) {
+async function pred_results(msg, args) {
     let argsDict = utils.manage_arguments(args);
     
     let year = argsDict["-y"] || "";
@@ -74,5 +74,5 @@ async function command(msg, args) {
 }
 
 module.exports = async function (msg, args){
-    await command(msg, args)
+    await pred_results(msg, args)
 }

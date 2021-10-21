@@ -10,6 +10,7 @@ const next = require("./infos/next.js");
 const predictions = require("./predictions/predictions.js")
 const pred_results = require("./predictions/pred_results.js")
 const pred_stands = require("./predictions/pred_stands.js")
+const channel = require("./settings/channel.js")
 const help = require("./help.js")
 
 const utils = require("../utils.js");
@@ -53,6 +54,8 @@ const commands = {
 
     pred_stands: pred_stands,
     ps: pred_stands,
+
+    channel: channel,
 
     help: help, h: help
 };

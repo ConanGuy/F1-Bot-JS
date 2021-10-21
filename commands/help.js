@@ -52,6 +52,16 @@ const helpCommands = {
         "Aliases": ["schedule", "s"],
         "Description": ["Get schedule of a season"],
         "Options": ["-y YEAR", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+    },
+    "pred_results": {
+        "Aliases": ["pred_results", "pr"],
+        "Description": ["Get predictions result for a race"],
+        "Options": ["-y YEAR", "-r ROUND", "-u @USER"]
+    },
+    "pred_stands": {
+        "Aliases": ["pred_stands", "ps"],
+        "Description": ["Get predictions standing for the current server"],
+        "Options": ["-y YEAR", "-r ROUND", "--global"]
     }
 }
 
@@ -78,13 +88,19 @@ const commandsAliases = {
     "q": "qualifs",
 
     "pitstops": "pitstops",
-    "ps": "pitstops",
+    "pit": "pitstops",
 
     "next": "next",
     "n": "next",
 
     "predictions": "predictions",
     "p": "predictions",
+
+    "pred_results": "pred_results",
+    "pr": "pred_results",
+
+    "pred_stands": "pred_stands",
+    "ps": "pred_stands",
 
     "help": "help"
 }
@@ -98,6 +114,8 @@ function help(msg, args) {
             cmds.push("`"+c+"`")
         }
         const embed = new MessageEmbed()
+        .setColor('#0099ff')
+        .setAuthor(msg.client.user.tag, msg.client.user.defaultAvatarURL)
         .setTitle("Command '"+cmd+"': ")
         .addFields(
             { name: 'Available commands', value: cmds.join(", ")}

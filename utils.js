@@ -100,6 +100,41 @@ class SQL{
 }
 
 module.exports = {
+    get_stand_str: function (res, membersList){
+        const maxLen = 16
+
+        if (res.length == 0)
+            return "No data found"
+        let len = res.length.toString().length
+        if (len == 1) len = 2
+        let str = "```"
+        for (const s of res){
+            let rank = s["rank"]
+            let user_id = s["user_id"]
+            let points = s["points"]
+            var cnt = s["races"] || ""
+
+            let rankStr = "0".repeat(len-rank.toString().length)+rank
+            let username = membersList[user_id].username
+            let memberStr = (username.length + rankStr.length+2 + 1 > maxLen) ? username.substr(0, maxLen-rankStr.length-4)+"..." : username
+            let firstLine = `${rankStr}- ${memberStr}:`
+            firstLine += " ".repeat(maxLen-firstLine.length)
+    
+            let pointsStr = `${points} points`
+            pointsStr = " ".repeat(maxLen-pointsStr.length) + pointsStr
+
+            let racesStr = cnt+" races "
+            racesStr = " ".repeat(maxLen-racesStr.length) + racesStr
+            let thirdLine = (cnt != "" ? "\n"+racesStr : "") 
+
+            str += firstLine+"\n" 
+            str += pointsStr
+            str += thirdLine
+            str += "\n"
+        }
+        return str.substring(0, str.length - 1)+"```"
+    },
+
     get_default_channel: async function (guild){
         const channels = await guild.channels.fetch()
         let channel
