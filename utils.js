@@ -173,11 +173,14 @@ module.exports = {
             "-p": {"nbParams": 1, "condition": "Number.isInteger(parseInt(params[0]))", "return": "params[0]"},
 
             "--table": {"nbParams": 0, "condition": "true", "return": "true"},
+            "--global": {"nbParams": 0, "condition": "true", "return": "true"},
 
             "-col": {"nbParams": 1, "condition": "isColor(params[0])", "return": "params[0]"},
             "-bg": {"nbParams": 1, "condition": "isColor(params[0])", "return": "params[0]"},
             "-font": {"nbParams": 1, "condition": "font_exists(params[0])", "return": "params[0]"},
-            "-s": {"nbParams": 1, "condition": "Number.isInteger(parseInt(params[0]))", "return": "params[0]"}
+            "-s": {"nbParams": 1, "condition": "Number.isInteger(parseInt(params[0]))", "return": "params[0]"},
+
+            "-u": {"nbParams": 1, "condition": "true", "return": "params[0].replace(/\\D/g, '')"}
         };
         
         let ret = {};
@@ -208,7 +211,7 @@ module.exports = {
         return ret; 
     },
         
-    set_pred_message: function(pred){
+    set_pred_message: function(pred, last=true){
         let s = "```"
 
         let strPred = []
@@ -227,10 +230,11 @@ module.exports = {
             if (!(pred.includes(d))) left.push(d);
         }
 
-        if (left.length > 0){
-            s += "\n\nLEFT: "+left.join(",")
+        if (last){
+            if (left.length > 0){
+                s += "\n\nLEFT: "+left.join(",")
+            }
         }
-
         s += "```"
 
         return s

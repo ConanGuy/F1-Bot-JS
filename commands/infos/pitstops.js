@@ -1,9 +1,9 @@
 var ErgastClient = require("ergast-client");
 var ergast = new ErgastClient();
 
-const utils = require("../utils.js");
+const utils = require("../../utils.js");
 
-function constructorsStandings(msg, args) {
+function pitstops(msg, args) {
     let argsDict = utils.manage_arguments(args);
     if ("error" in argsDict){
         utils.send(msg, {content: argsDict["error"]});
@@ -11,19 +11,21 @@ function constructorsStandings(msg, args) {
     }
 
     let year = argsDict["-y"] || "current";
-    let round = argsDict["-r"] || "last";
+    let round = argsDict["-r"] || 'last';
+    let pitstop = argsDict["-p"] || '0';
     let filters = argsDict["-f"] || "";
-    ergast.getConstructorStandingsAfterRound(year,round, function(err, standing){
+    ergast.getPitStop(year, round, pitstop, function(err, pitstops){
         try{
             let data = [];
-            data.push(["Position", "Points", "Constructor", "Wins"]);
-            for (let constructor of standing["standings"]){
-                let pos = constructor["position"];
-                let points = constructor["points"];
-                let c = constructor["constructor"]["name"];
-                let wins = constructor["wins"];
-
-                let row = [pos, points, c, wins];
+            data.push(["Driver", "Lap", "Stop", "Time", "Duration"]);
+            for (let ps of pitstops["pitStops"]){
+                let d = ps["driverId"];
+                let lap = ps["lap"];
+                let stop = ps["stop"];
+                let time = ps["time"];
+                let duration = ps["duration"];
+                
+                let row = [d, lap, stop, time, duration];
                 let rowStr = row.join(",").toUpperCase();
                 let filtersArr = filters.split(",")
                 let isIn = (filters == "") ? true : false;
@@ -47,5 +49,5 @@ function constructorsStandings(msg, args) {
 }
 
 module.exports = async function (msg, args){
-    constructorsStandings(msg, args)
+    pitstops(msg, args)
 }

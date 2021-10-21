@@ -1,8 +1,8 @@
 var ErgastClient = require("ergast-client");
 var ergast = new ErgastClient();
 
-const { set_pred_message } = require("../utils.js");
-const utils = require("../utils.js");
+const { set_pred_message } = require("../../utils.js");
+const utils = require("../../utils.js");
 const SQL = utils.SQL
 
 async function predictions(msg, args) {

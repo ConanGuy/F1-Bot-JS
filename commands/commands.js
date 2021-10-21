@@ -1,18 +1,21 @@
-const schedule = require("./schedule.js");
-const results = require("./results.js");
-const drivers = require("./drivers.js");
-const constructors = require("./constructors.js");
-const driversStandings = require("./driversStandings.js");
-const constructorsStandings = require("./constructorsStandings.js");
-const qualifs = require("./qualifs.js");
-const pitstops = require("./pitstops.js");
-const next = require("./next.js");
-const predictions = require("./predictions.js")
+const schedule = require("./infos/schedule.js");
+const results = require("./infos/results.js");
+const drivers = require("./infos/drivers.js");
+const constructors = require("./infos/constructors.js");
+const driversStandings = require("./infos/driversStandings.js");
+const constructorsStandings = require("./infos/constructorsStandings.js");
+const qualifs = require("./infos/qualifs.js");
+const pitstops = require("./infos/pitstops.js");
+const next = require("./infos/next.js");
+const predictions = require("./predictions/predictions.js")
+const pred_results = require("./predictions/pred_results.js")
+const pred_stands = require("./predictions/pred_stands.js")
 const help = require("./help.js")
 
 const utils = require("../utils.js");
 
-const command_prefix = ["f1.", "F1."]
+require('dotenv').config();
+const command_prefix = process.env.PREFFIX.split(", ");
 
 const commands = {
     schedule: schedule,
@@ -37,7 +40,7 @@ const commands = {
     q: qualifs,
 
     pitstops: pitstops,
-    ps: pitstops,
+    pit: pitstops,
 
     next: next,
     n: next,
@@ -45,7 +48,13 @@ const commands = {
     predictions: predictions,
     p: predictions,
 
-    help: help
+    pred_results: pred_results,
+    pr: pred_results,
+
+    pred_stands: pred_stands,
+    ps: pred_stands,
+
+    help: help, h: help
 };
 
 module.exports = async function (msg){
@@ -61,7 +70,6 @@ module.exports = async function (msg){
             
             // Check if the command is exists
             if(!(command in commands)){
-                utils.send(msg, {content: `'${command}' command not found`});
                 return;
             }
 

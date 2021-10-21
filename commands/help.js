@@ -29,7 +29,7 @@ const helpCommands = {
         "Options": ["--table", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT"]
     },
     "pitstops": {
-        "Aliases": ["pitstops", "ps"],
+        "Aliases": ["pitstops", "pit"],
         "Description": ["Get details about pitstops of a race"],
         "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
     },

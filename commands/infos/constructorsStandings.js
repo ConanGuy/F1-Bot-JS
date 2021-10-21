@@ -1,9 +1,9 @@
 var ErgastClient = require("ergast-client");
 var ergast = new ErgastClient();
 
-const utils = require("../utils.js");
+const utils = require("../../utils.js");
 
-function constructors(msg, args) {
+function constructorsStandings(msg, args) {
     let argsDict = utils.manage_arguments(args);
     if ("error" in argsDict){
         utils.send(msg, {content: argsDict["error"]});
@@ -11,17 +11,19 @@ function constructors(msg, args) {
     }
 
     let year = argsDict["-y"] || "current";
+    let round = argsDict["-r"] || "last";
     let filters = argsDict["-f"] || "";
-    ergast.getConstructors(year, function(err, constructors){
+    ergast.getConstructorStandingsAfterRound(year,round, function(err, standing){
         try{
             let data = [];
-            data.push(["ID", "Name", "Nationality"]);
-            for (let constructor of constructors["constructors"]){
-                let id = constructor["constructorId"];
-                let name = constructor["name"];
-                let nationality = constructor["nationality"];
+            data.push(["Position", "Points", "Constructor", "Wins"]);
+            for (let constructor of standing["standings"]){
+                let pos = constructor["position"];
+                let points = constructor["points"];
+                let c = constructor["constructor"]["name"];
+                let wins = constructor["wins"];
 
-                let row = [id, name, nationality];
+                let row = [pos, points, c, wins];
                 let rowStr = row.join(",").toUpperCase();
                 let filtersArr = filters.split(",")
                 let isIn = (filters == "") ? true : false;
@@ -45,5 +47,5 @@ function constructors(msg, args) {
 }
 
 module.exports = async function (msg, args){
-    constructors(msg, args)
+    constructorsStandings(msg, args)
 }

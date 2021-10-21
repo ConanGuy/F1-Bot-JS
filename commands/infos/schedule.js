@@ -1,7 +1,7 @@
 var ErgastClient = require("ergast-client");
 var ergast = new ErgastClient();
 
-const utils = require("../utils.js");
+const utils = require("../../utils.js");
 
 function schedule(msg, args) {
     let argsDict = utils.manage_arguments(args);

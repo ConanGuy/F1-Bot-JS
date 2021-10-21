@@ -12,7 +12,7 @@ client.on("ready", botReady);
 
 function botReady(){
     const date = new Date();
-    console.log(`[${date.toUTCString()}] TestBot has connected to Discord\n`);
+    console.log(`[${date.toUTCString()}] ${client.user.username} has connected to Discord\n`);
 
     const interval = 2 * 1000; // Every 10min
     var thread_results = function() {

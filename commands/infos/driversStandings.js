@@ -1,9 +1,9 @@
 var ErgastClient = require("ergast-client");
 var ergast = new ErgastClient();
 
-const utils = require("../utils.js");
+const utils = require("../../utils.js");
 
-function results(msg, args) {
+function driversStandings(msg, args) {
     let argsDict = utils.manage_arguments(args);
     if ("error" in argsDict){
         utils.send(msg, {content: argsDict["error"]});
@@ -11,25 +11,21 @@ function results(msg, args) {
     }
 
     let year = argsDict["-y"] || "current";
-    let round = argsDict["-r"] || 'last';
+    let round = argsDict["-r"] || "last";
     let filters = argsDict["-f"] || "";
-    ergast.getRaceResults(year, round, function(err, raceResults){
+    ergast.getDriverStandingsAfterRound(year,round, function(err, standing){
         try{
             let data = [];
-            data.push(["Position", "Driver", "Points", "Constructor", "Laps", "Status", "Grid", "Time"]);
-            for (let driver of raceResults["driverResults"]){
+            data.push(["Position", "Points", "Name", "Constructor", "Wins"]);
+            for (let driver of standing["standings"]){
                 let pos = driver["position"];
-                let d = driver["driver"];
-                let dname = d["givenName"]+' '+d["familyName"];
                 let points = driver["points"];
+                let d = driver["driver"];
+                let name = d["givenName"] + " " + d["familyName"]
                 let constructor = driver["constructor"]["name"];
-                let laps = driver["laps"];
-                let status = driver["status"];
-                let timeDict = driver["time"];
-                let time = (timeDict === null) ? "NaN" : timeDict['time']
-                let grid = driver["grid"];
+                let wins = driver["wins"];
 
-                let row = [pos, dname, points, constructor, laps, status, grid, time];
+                let row = [pos, points, name, constructor, wins];
                 let rowStr = row.join(",").toUpperCase();
                 let filtersArr = filters.split(",")
                 let isIn = (filters == "") ? true : false;
@@ -53,5 +49,5 @@ function results(msg, args) {
 }
 
 module.exports = async function (msg, args){
-    results(msg, args)
+    driversStandings(msg, args)
 }

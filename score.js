@@ -4,12 +4,32 @@ const { MessageEmbed } = require('discord.js');
 
 const utils = require("./utils");
 const SQL = utils.SQL;
+let zip= (...rows) => [...rows[0]].map((_,c) => rows.map(row => row[c]))
+
+function get_pred_cons_distance(result, pred){
+    let distance = 0
+    let pCopy = pred.slice()
+    for (const [index, value] of result.entries()){
+        let idx = pCopy.indexOf(value)
+        distance += idx == -1 ? 21 : Math.abs(index-idx)
+        if (idx != -1) pCopy[idx] = 'NaN'
+    }
+    return 200-distance
+}
+
+function get_pred_cons_good(result, pred){
+    let distance = 0
+    for (const [index, value] of result.entries()){
+        distance += result[index] == pred[index] ? 1 : 0
+    }
+    return distance
+}
+
 
 function get_pred_drivers_good(result, pred){
     let distance = 0
     for (const [index, value] of result.entries()){
-        let idx = pred.indexOf(value)
-        distance += idx == index ? 1 : 0
+        distance += result[index] == pred[index] ? 1 : 0
     }
     return distance
 }
@@ -18,9 +38,9 @@ function get_pred_drivers_distance(result, pred){
     let distance = 0
     for (const [index, value] of result.entries()){
         let idx = pred.indexOf(value)
-        distance += idx == -1 ? 21 : Math.abs(index-idx)
+        distance += idx == -1 ? 20 : Math.abs(index-idx)
     }
-    return distance
+    return 200-distance
 }
 
 async function send_result(client){
@@ -48,7 +68,7 @@ async function send_result(client){
             membersList[member.id] = member.user
         }
 
-        let stand = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY points) as rank, * FROM TOTAL_SCORE WHERE race_id="+race_id+" and user_id in ("+ids+")")
+        let stand = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY points DESC) as rank, * FROM TOTAL_SCORE WHERE race_id="+race_id+" and user_id in ("+ids+")")
         let chan = await SQL.get("SELECT channel_id FROM PREDS_CHANNEL WHERE guild_id = "+guild.id)
         
         let channel
@@ -109,19 +129,30 @@ async function get_new_results(client){
             drivers.push(d["code"])
             cons.push(c["constructorId"])
         }
+        let driverCons = zip(drivers, cons)
 
         let preds = await SQL.all("SELECT * FROM PREDICTIONS WHERE race_id = "+race_id)
 
         for (const p of preds){
             let pred = eval(p["pred"])
 
+            let predCons = []
+            for (const [i, pr] of pred.entries())
+                predCons.push(drivers.includes(pr) ? driverCons[drivers.indexOf(pr)][1] : "NaN")
+
+            let cDist = get_pred_cons_distance(cons, predCons)
+            let cGood = get_pred_cons_good(cons, predCons)
             let dDist = get_pred_drivers_distance(drivers, pred)
             let dGood = get_pred_drivers_good(drivers, pred)
 
             let user_id = p["user_id"]
             let race_id = p["race_id"]
 
-            await SQL.run("INSERT INTO PREDS_SCORES VALUES(?, ?, ?, ?)", [user_id, race_id, dDist, dGood])
+            let user_exists = await SQL.get("SELECT * FROM PREDS_SCORES WHERE race_id = ? and user_id = ?", [race_id, user_id])
+            if (user_exists === undefined)
+                await SQL.run("INSERT INTO PREDS_SCORES VALUES(?, ?, ?, ?, ?, ?)", [user_id, race_id, dDist, dGood, cDist, cGood])
+            else
+                await SQL.run("UPDATE PREDS_SCORES SET drivers_distance = ?, drivers_good = ?, cons_distance = ?, cons_good = ? WHERE user_id = ? and race_id = ?", [dDist, dGood, cDist, cGood, user_id, race_id])
         }  
         
         await SQL.get("UPDATE RACES_RESULTS SET drivers = ?, constructors = ?, status = 1 WHERE race_id = ?", ["["+driversRes.toString()+"]", "["+consRes.toString()+"]", race_id])
