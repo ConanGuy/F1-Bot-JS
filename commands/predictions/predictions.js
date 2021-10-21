@@ -38,8 +38,10 @@ async function predictions(msg, args) {
        
         let author = msg.author
         let user_id = args[0] || author.id
-
         user_id = user_id.replace(/\D/g, "")
+    
+        try{ var user = (await msg.guild.members.fetch(user_id)).user }
+        catch(error) { var user = msg.author }
 
         let value = await SQL.get_preds([user_id, race_id]);
         if (value == undefined){
@@ -60,7 +62,7 @@ async function predictions(msg, args) {
 
         const embed = new MessageEmbed()
         .setColor('#0099ff')
-        .setAuthor(msg.client.user.tag, msg.client.user.defaultAvatarURL)
+        .setAuthor(user.tag, await user.avatarURL())
         .setTitle("Race: ")
         .setDescription(ret)
         .addFields(

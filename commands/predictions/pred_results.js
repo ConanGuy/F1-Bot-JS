@@ -10,11 +10,22 @@ async function pred_results(msg, args) {
     let year = argsDict["-y"] || "";
     let round = year == "" ? "" : argsDict["-r"] || "";
 
-    let user_id = argsDict["-u"] || msg.author.id
+    let arg0 = args[0] || ""
+    arg0 = arg0.replace(/\D/g, "")
     
-    try{ var user = (await msg.guild.members.fetch(user_id)).user }
-    catch(error) { var user = msg.author }
-    
+    try{
+        if(arg0 == "") throw "Error"
+        var user = (await msg.guild.members.fetch(arg0)).user
+        var user_id = user.id
+    }
+    catch(error) {
+        var user_id =  argsDict["-u"] || msg.author.id
+        user_id = user_id.replace(/\D/g, "")
+        
+        try{ var user = (await msg.guild.members.fetch(user_id)).user }
+        catch(error) { var user = msg.author }
+    }
+
     let res = await SQL.get("SELECT MAX(race_id) as max_r, * FROM ALL_RESULTS WHERE race_id LIKE '"+year+"%"+round+"' AND user_id = "+user_id)
     if (res["max_r"] === null){
         return await utils.send(msg, {content: "No race found for user "+user.toString()})
@@ -55,7 +66,7 @@ async function pred_results(msg, args) {
         }
         const embed = new MessageEmbed()
         .setColor('#0099ff')
-        .setAuthor(msg.client.user.tag, msg.client.user.defaultAvatarURL)
+        .setAuthor(user.tag, await user.avatarURL())
         .setTitle("Race: ")
         .setDescription(ret)
         .addFields(
