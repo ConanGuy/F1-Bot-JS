@@ -61,7 +61,7 @@ const helpCommands = {
     "pred_stands": {
         "Aliases": ["pred_stands", "ps"],
         "Description": ["Get predictions standing for the current server"],
-        "Options": ["-y YEAR", "-r ROUND", "--global"]
+        "Options": ["-y YEAR", "-r ROUND", "--global", "--top"]
     }
 }
 
