@@ -104,7 +104,7 @@ async function pred_stands(msg, args) {
 
 
 
-        if (!top) embed.setAuthor(user.tag, await user.avatarURL())
+        if (!top) embed.setAuthor(user.tag, await user.avatarURL() || user.defaultAvatarURL)
 
         await utils.send(msg, {embeds: [embed]})
     })

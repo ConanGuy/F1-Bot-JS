@@ -66,7 +66,7 @@ async function pred_results(msg, args) {
         }
         const embed = new MessageEmbed()
         .setColor('#0099ff')
-        .setAuthor(user.tag, await user.avatarURL())
+        .setAuthor(user.tag, await user.avatarURL() || user.defaultAvatarURL)
         .setTitle("Race: ")
         .setDescription(ret)
         .addFields(
