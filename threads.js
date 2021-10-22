@@ -6,6 +6,107 @@ const utils = require("./utils");
 const SQL = utils.SQL;
 let zip= (...rows) => [...rows[0]].map((_,c) => rows.map(row => row[c]))
 
+const schedule = require('node-schedule')
+var warning_race_scheduled = 0
+
+async function set_schedule(client){
+    ergast.getRace("current", "next", async function(err, race){        
+        if (err) return console.log(err);
+
+        let data = [];
+        data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
+
+        let seasonYear = race["season"];
+        let round = race["round"];
+        let gp = race["raceName"];
+        let circuit = race["circuit"];
+        let circuitName = circuit["circuitName"];
+        let location = circuit["location"];
+        let city = location["locality"];
+        let country = location["country"];
+        let date = race["date"];
+        let time = race["time"];
+
+        var desc = `${gp} - ${city}, ${country} - ${date} ${time}`
+
+        let race_id = seasonYear + "" + round
+
+        let raceStartsAt = new Date(date+" "+time)
+        raceStartsAt.setHours(raceStartsAt.getHours() - 2)
+        if (warning_race_scheduled != race_id){
+            raceStartsAt.setHours(raceStartsAt.getHours()-1)
+            const job = schedule.scheduleJob(raceStartsAt, async function() { await warning(client)})
+            console.log(`[Logs @${new Date().toUTCString()}] Warning job created for: ${desc} at ${raceStartsAt}\n`);
+            warning_race_scheduled = race_id
+        }
+    })
+
+}
+
+async function warning(client){
+    ergast.getRace("current", "next", async function(err, race){        
+        if (err) return console.log(err);
+
+        let data = [];
+        data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
+
+        let seasonYear = race["season"];
+        let round = race["round"];
+        let gp = race["raceName"];
+        let circuit = race["circuit"];
+        let circuitName = circuit["circuitName"];
+        let location = circuit["location"];
+        let city = location["locality"];
+        let country = location["country"];
+        let date = race["date"];
+        let time = race["time"];
+
+        let raceStartsAt = new Date(date+" "+time)
+        raceStartsAt.setHours(raceStartsAt.getHours() - 1)
+
+        time = time.substring(0, time.length-4);
+        time = time.replace(':', 'h')
+
+        let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
+        data.push( row );
+        
+        var desc = `${row[2]} - ${row[4]}, ${row[5]}`
+
+        let guildsManager = await client.guilds.fetch()
+        for (const g of guildsManager){
+            let guild = await client.guilds.fetch(g[0])
+            
+            let chan = await SQL.get("SELECT channel_id FROM PREDS_CHANNEL WHERE guild_id = "+guild.id)
+            
+            try { 
+                var channel = await guild.channels.fetch(chan["channel_id"].toString())
+            }
+            catch (err){
+                var channel = utils.get_default_channel(guild)
+            }
+
+            var retStr = `Be aware, @everyone !! You have one hour left to make your predictions for: ${desc}\n Ending at ${raceStartsAt}`
+            await channel.send({content: retStr})
+            console.log(`[${guild.name} @${new Date().toUTCString()}] ${retStr}`)
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function get_pred_cons_distance(result, pred){
     let distance = 0
     let pCopy = pred.slice()
@@ -60,34 +161,30 @@ async function send_result(client){
     let guildsManager = await client.guilds.fetch()
     for (const g of guildsManager){
         let guild = await client.guilds.fetch(g[0])
-
         
         ergast.getRace(year, round, async function(err, race){
-            try{
-                let data = [];
-                data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
+            if (err) return console.log(err);
 
-                let seasonYear = race["season"];
-                let round = race["round"];
-                let gp = race["raceName"];
-                let circuit = race["circuit"];
-                let circuitName = circuit["circuitName"];
-                let location = circuit["location"];
-                let city = location["locality"];
-                let country = location["country"];
-                let date = race["date"];
-                let time = race["time"];
-                time = time.substring(0, time.length-4);
-                time = time.replace(':', 'h')
+            let data = [];
+            data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
 
-                let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
-                data.push( row );
-                
-                var desc = `${row[2]} - ${row[4]}, ${row[5]} - ${row[6]} ${row[7]}`
-            }
-            catch(error){
-                return console.log('Error on score race data');
-            }
+            let seasonYear = race["season"];
+            let round = race["round"];
+            let gp = race["raceName"];
+            let circuit = race["circuit"];
+            let circuitName = circuit["circuitName"];
+            let location = circuit["location"];
+            let city = location["locality"];
+            let country = location["country"];
+            let date = race["date"];
+            let time = race["time"];
+            time = time.substring(0, time.length-4);
+            time = time.replace(':', 'h')
+
+            let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
+            data.push( row );
+            
+            var desc = `${row[2]} - ${row[4]}, ${row[5]} - ${row[6]} ${row[7]}`
 
             let members = await guild.members.list({limit:1000})
 
@@ -204,5 +301,6 @@ async function get_new_results(client){
 
 module.exports = {
     get_new_results: get_new_results,
-    send_result: send_result
+    send_result: send_result,
+    set_schedule: set_schedule
 }

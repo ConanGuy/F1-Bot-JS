@@ -22,6 +22,12 @@ async function predictions(msg, args) {
             let country = location["country"];
             let date = race["date"];
             let time = race["time"];
+
+            let raceStartsAt = new Date(date+" "+time)
+            raceStartsAt.setHours(raceStartsAt.getHours() - 1)
+            let diff = raceStartsAt - new Date()
+            let hours = diff / (1000*60*60)
+
             time = time.substring(0, time.length-4);
             time = time.replace(':', 'h')
 
@@ -45,7 +51,9 @@ async function predictions(msg, args) {
 
         let value = await SQL.get_preds([user_id, race_id]);
         if (value == undefined){
-            if (user_id == author.id){pred = []
+            if (user_id == author.id){
+                if (hours > 0) return utils.send(msg, {content: "You can register and modify your prediction until one hour before the beginning of the race !"})
+                pred = []
                 for (let i=0; i<20; i++){
                     pred.push("NaN");
                 }

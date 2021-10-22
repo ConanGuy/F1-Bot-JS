@@ -89,8 +89,6 @@ async function pred_stands(msg, args) {
         let strGood = utils.get_stand_str(standGood, membersList, user_id, top)
         let strDist = utils.get_stand_str(standDist, membersList, user_id, top)
 
-        console.log(user)
-
         const embed = new MessageEmbed()
         .setColor('#0099ff')
         .setTitle("Ranking: ")
@@ -101,8 +99,6 @@ async function pred_stands(msg, args) {
             { name: 'Ranks distance:', value: strDist, inline: true}
         )
         .setTimestamp()
-
-
 
         if (!top) embed.setAuthor(user.tag, await user.avatarURL() || user.defaultAvatarURL)
 

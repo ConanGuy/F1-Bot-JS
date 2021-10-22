@@ -1,5 +1,5 @@
 require('dotenv').config();
-const preds_threads = require("./score.js")
+const preds_threads = require("./threads.js")
 const utils = require("./utils");
 const SQL = utils.SQL;
 const help = require("./commands/help.js")
@@ -15,9 +15,11 @@ client.on("ready", botReady);
 
 async function botReady(){
     const date = new Date();
-    console.log(`[${date.toUTCString()}] ${client.user.username} has connected to Discord\n`);
+    console.log(`[Logs @${date.toUTCString()}] ${client.user.username} has connected to Discord\n`);
 
     preds_threads.get_new_results(client)
+    preds_threads.set_schedule(client)
+
     const interval = 10 * 60 * 1000; // Every 10min
     var thread_results = function() {
         setInterval(function() {
@@ -25,7 +27,15 @@ async function botReady(){
         }, interval);
     }
 
+    const interval_warning = 30 * 60 * 1000; // Every 30min
+    var thread_warning = function() {
+        setInterval(function() {
+            preds_threads.set_schedule(client);
+        }, interval_warning);
+    }
+
     thread_results()
+    thread_warning()
 }
 
 const commandHandler = require("./commands/commands");

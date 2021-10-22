@@ -72,8 +72,17 @@ async function add_driver_at(message, driver, idx, author, pred, race_id){
 
 async function dm_predictions(msg) {  
     let args = msg.content.split(" ")
+    console.log(`[Log @${new Date()}] ${msg.author} sent ${msg.content}`)
     race  = ergast.getRace("current", "next", async function(err, race){
+        if (err) return author.send({content: `Unknown error: ${err}`})
         let race_id = `${race["season"]}${race["round"]}`;
+        let date = race["date"];
+        let time = race["time"];
+
+        let raceStartsAt = new Date(date+" "+time)
+        raceStartsAt.setHours(raceStartsAt.getHours() - 1)
+        let diff = raceStartsAt - new Date()
+        let hours = diff / (1000*60*60)
        
         let author = msg.author
         let user_id = author.id
@@ -103,12 +112,17 @@ async function dm_predictions(msg) {
             await show_message(message, author, pred, race_id)
             return
         }
+        else if (hours <= 0) {
+            console.log(`[Log @${new Date()}] Returned You can register and modify your prediction until one hour before the beginning of the race !`)
+            return author.send({content: "You can register and modify your prediction until one hour before the beginning of the race !"})
+        }
         else if (args[0].toUpperCase() == "RESET"){
             await reset_pred(message, author, pred, race_id)
             return
         }
         else if (args.filter(x => !DRIVERS.includes(x.toUpperCase())).length == 0){
             if (pred.filter(x => x=="NaN").length < args.length){
+                console.log(`[Log @${new Date()}] Returned Too many drivers given`)
                 await author.send(content="Too many drivers given")
                 return
             }
@@ -121,12 +135,14 @@ async function dm_predictions(msg) {
                     throw 'Error';
             }
             catch(error){
-                await author.send(content=utils.set_pred_message(pred)+"The parameter should be an int between 1 and 20")
+                console.log(`[Log @${new Date()}] Returned The parameter should be an int between 1 and 20`)
+                await author.send("The parameter should be an int between 1 and 20")
                 return
             }
 
             if (!DRIVERS.includes(args[0].toUpperCase())){
-                await author.send(content=utils.set_pred_message(pred)+`${args[0]} not found`)
+                console.log(`[Log @${new Date()}] Returned ${args[0]} not found`)
+                await author.send(content=`${args[0]} not found`)
                 return
             }
             await add_driver_at(message, args[0].toUpperCase(), parseInt(args[1]), author, pred, race_id)

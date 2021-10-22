@@ -5,6 +5,7 @@
     "discord.js": "^13.2.0",
     "dotenv": "^10.0.0",
     "ergast-client": "^0.2.9",
+    "node-schedule": "^2.0.0",
     "sqlite3": "^5.0.2",
     "table": "^6.7.2",
     "text2png": "^2.3.0",
