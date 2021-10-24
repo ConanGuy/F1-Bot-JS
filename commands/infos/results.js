@@ -11,7 +11,7 @@ function results(msg, args) {
     }
 
     let filters = argsDict["-f"] || "";
-    ergast.getRaceResults(year, round, function(err, raceResults){
+    ergast.getRaceResults(year, round, async function(err, raceResults){
         if(err) return await utils.send(msg, {content: "Results not found"})
         try{
             let data = [];

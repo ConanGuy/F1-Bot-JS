@@ -13,7 +13,7 @@ function constructorsStandings(msg, args) {
     let year = argsDict["-y"] || "current";
     let round = argsDict["-r"] || "last";
     let filters = argsDict["-f"] || "";
-    ergast.getConstructorStandingsAfterRound(year,round, function(err, standing){
+    ergast.getConstructorStandingsAfterRound(year,round, async function(err, standing){
         if(err) return await utils.send(msg, {content: "Constructors standings not found"})
         try{
             let data = [];

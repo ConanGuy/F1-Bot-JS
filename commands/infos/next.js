@@ -11,7 +11,7 @@ function next(msg, args) {
     }
 
     let table = argsDict["--table"] || false;
-    ergast.getRace("current", "next", function(err, race){
+    ergast.getRace("current", "next", async function(err, race){
         if(err) return await utils.send(msg, {content: "Race not found"})
         try{
             let data = [];

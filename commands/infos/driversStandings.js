@@ -13,7 +13,7 @@ function driversStandings(msg, args) {
     let year = argsDict["-y"] || "current";
     let round = argsDict["-r"] || "last";
     let filters = argsDict["-f"] || "";
-    ergast.getDriverStandingsAfterRound(year,round, function(err, standing){
+    ergast.getDriverStandingsAfterRound(year,round, async function(err, standing){
         if(err) return await utils.send(msg, {content: "Driver standings not found"})
         try{
             let data = [];

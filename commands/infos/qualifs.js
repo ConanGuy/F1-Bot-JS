@@ -13,7 +13,7 @@ function qualifs(msg, args) {
     let year = argsDict["-y"] || "current";
     let round = argsDict["-r"] || 'last';
     let filters = argsDict["-f"] || "";
-    ergast.getQualifyingResults(year, round, function(err, qualifsResults){
+    ergast.getQualifyingResults(year, round, async function(err, qualifsResults){
         if(err) return await utils.send(msg, {content: "Qualifs not found"})
         try{
             let data = [];
