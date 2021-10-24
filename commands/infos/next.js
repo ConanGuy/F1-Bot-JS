@@ -12,6 +12,7 @@ function next(msg, args) {
 
     let table = argsDict["--table"] || false;
     ergast.getRace("current", "next", function(err, race){
+        if(err) return await utils.send(msg, {content: "Race not found"})
         try{
             let data = [];
             data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);

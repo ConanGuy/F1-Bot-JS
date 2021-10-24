@@ -14,6 +14,7 @@ function constructorsStandings(msg, args) {
     let round = argsDict["-r"] || "last";
     let filters = argsDict["-f"] || "";
     ergast.getConstructorStandingsAfterRound(year,round, function(err, standing){
+        if(err) return await utils.send(msg, {content: "Constructors standings not found"})
         try{
             let data = [];
             data.push(["Position", "Points", "Constructor", "Wins"]);

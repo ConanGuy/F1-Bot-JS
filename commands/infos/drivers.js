@@ -13,6 +13,7 @@ function drivers(msg, args) {
     let year = argsDict["-y"] || "current";
     let filters = argsDict["-f"] || "";
     ergast.getDrivers(year, function(err, drivers){
+        if(err) return await utils.send(msg, {content: "Drivers not found"})
         try{
             let data = [];
             data.push(["ID", "Code", "Number", "First name", "Name", "Birth", "Nationality"]);

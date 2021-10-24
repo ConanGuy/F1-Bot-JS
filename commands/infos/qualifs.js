@@ -14,6 +14,7 @@ function qualifs(msg, args) {
     let round = argsDict["-r"] || 'last';
     let filters = argsDict["-f"] || "";
     ergast.getQualifyingResults(year, round, function(err, qualifsResults){
+        if(err) return await utils.send(msg, {content: "Qualifs not found"})
         try{
             let data = [];
             data.push(["Position", "Driver", "Constructor", "Q1", "Q2", "Q3"]);

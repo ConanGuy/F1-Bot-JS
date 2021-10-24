@@ -13,6 +13,7 @@ function constructors(msg, args) {
     let year = argsDict["-y"] || "current";
     let filters = argsDict["-f"] || "";
     ergast.getConstructors(year, function(err, constructors){
+        if(err) return await utils.send(msg, {content: "Constructors not found"})
         try{
             let data = [];
             data.push(["ID", "Name", "Nationality"]);

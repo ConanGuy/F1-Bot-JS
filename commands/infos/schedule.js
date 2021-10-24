@@ -12,7 +12,8 @@ function schedule(msg, args) {
 
     let year = argsDict["-y"] || "current";
     let filters = argsDict["-f"] || "";
-    ergast.getSeason(year, function(err, season){
+    ergast.getSeason(year, async function(err, season){
+        if(err) return await utils.send(msg, {content: "Season not found"})
         try{
             let data = [];
             data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);

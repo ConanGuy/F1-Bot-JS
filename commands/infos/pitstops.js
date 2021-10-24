@@ -15,6 +15,7 @@ function pitstops(msg, args) {
     let pitstop = argsDict["-p"] || '0';
     let filters = argsDict["-f"] || "";
     ergast.getPitStop(year, round, pitstop, function(err, pitstops){
+        if(err) return await utils.send(msg, {content: "Pitstops not found"})
         try{
             let data = [];
             data.push(["Driver", "Lap", "Stop", "Time", "Duration"]);

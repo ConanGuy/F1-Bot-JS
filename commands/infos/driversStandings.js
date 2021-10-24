@@ -14,6 +14,7 @@ function driversStandings(msg, args) {
     let round = argsDict["-r"] || "last";
     let filters = argsDict["-f"] || "";
     ergast.getDriverStandingsAfterRound(year,round, function(err, standing){
+        if(err) return await utils.send(msg, {content: "Driver standings not found"})
         try{
             let data = [];
             data.push(["Position", "Points", "Name", "Constructor", "Wins"]);
