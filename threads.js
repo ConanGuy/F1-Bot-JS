@@ -34,7 +34,6 @@ async function set_schedule(client){
         let raceStartsAt = new Date(date+" "+time)
         raceStartsAt.setHours(raceStartsAt.getHours() - 2)
         if (warning_race_scheduled != race_id){
-            raceStartsAt.setHours(raceStartsAt.getHours()-1)
             const job = schedule.scheduleJob(raceStartsAt, async function() { await warning(client)})
             console.log(`[Logs @${new Date().toUTCString()}] Warning job created for: ${desc} at ${raceStartsAt}\n`);
             warning_race_scheduled = race_id
