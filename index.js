@@ -20,7 +20,7 @@ async function botReady(){
     preds_threads.get_new_results(client)
     preds_threads.set_schedule(client)
 
-    const interval = 10 * 60 * 1000; // Every 10min
+    const interval = 3 * 60 * 1000; // Every 10min
     var thread_results = function() {
         setInterval(function() {
             preds_threads.get_new_results(client);
