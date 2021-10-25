@@ -35,8 +35,7 @@ function next(msg, args) {
             
             let ret = {content: `${row[2]} - ${row[4]}, ${row[5]} - ${row[6]} ${row[7]}`};
             if (table){
-                let str = utils.array_to_text(data);
-                utils.text_to_image(str, args);
+                utils.create_image(data)
                 ret["files"] = ["out.png"]
             }
             utils.send(msg, ret);   

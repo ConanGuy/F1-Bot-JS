@@ -35,9 +35,8 @@ function constructorsStandings(msg, args) {
                 }
                 if (isIn) data.push( row );
             };
-        
-            let str = utils.array_to_text(data);
-            utils.text_to_image(str, args);
+
+            utils.create_image(data, "FORMULA 1 - " + year.toUpperCase() + " SEASON CONSTRUCTORS STANDINGS")
 
             utils.send(msg, {files: ["out.png"]});
         }

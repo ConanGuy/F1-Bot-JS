@@ -174,45 +174,7 @@ module.exports = {
         return channel
     },
 
-    text_to_image: function (text, args){
-        var fs = require('fs');
-        var text2png = require('text2png');
-
-        let argsDict = this.manage_arguments(args);
-
-        if ("error" in argsDict){
-            utils.send(msg, {content: argsDict["error"]});
-            return
-        }
-    
-        let font = argsDict["-font"] || "consola";
-        let size = argsDict["-s"] || "20";
-        let color = argsDict["-col"] || "black";
-        let bgColor = argsDict["-bg"] || "white";
-
-        let optsDict = {font: size+"px "+font, localFontName: font, localFontPath: "fonts/"+font.toLowerCase()+".ttf", color: color, bgColor: bgColor, padding: 10 };
-
-        fs.writeFileSync('out.png', text2png(text, optsDict));
-    },
-
-    array_to_text: function (data){
-        const config = {
-            border: { 
-                topBody: `─`, topJoin: `┬`, topLeft: `┌`, topRight: `┐`,
-                bottomBody: `─`, bottomJoin: `┴`, bottomLeft: `└`, bottomRight: `┘`,
-                bodyLeft: `│`, bodyRight: `│`, bodyJoin: `│`,
-                joinBody: `─`, joinLeft: `├`, joinRight: `┤`, joinJoin: `┼`
-            }
-        };
-
-        const table = require('table').table;
-        let t = table(data, config);
-
-        let str = t.toString();
-        str = str.substring(0, str.length-1);
-
-        return str;
-    },
+    create_image: require("./testcanvas.js"),
 
     send: function (msg, kwargs, msg2=null){
         let author = msg.author;
@@ -237,11 +199,6 @@ module.exports = {
             "--table": {"nbParams": 0, "condition": "true", "return": "true"},
             "--global": {"nbParams": 0, "condition": "true", "return": "true"},
             "--top": {"nbParams": 0, "condition": "true", "return": "true"},
-
-            "-col": {"nbParams": 1, "condition": "isColor(params[0])", "return": "params[0]"},
-            "-bg": {"nbParams": 1, "condition": "isColor(params[0])", "return": "params[0]"},
-            "-font": {"nbParams": 1, "condition": "font_exists(params[0])", "return": "params[0]"},
-            "-s": {"nbParams": 1, "condition": "Number.isInteger(parseInt(params[0]))", "return": "params[0]"},
 
             "-u": {"nbParams": 1, "condition": "true", "return": "params[0].replace(/\\D/g, '')"}
         };

@@ -6,32 +6,32 @@ const helpCommands = {
     "constructors": {
         "Aliases": ["constructors", "c"],
         "Description": ["Get details about constructors of a season"],
-        "Options": ["-y YEAR", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
     },
     "constructorsStandings": {
         "Aliases": ["scoreboard_constructors", "sbc"],
         "Description": ["Get the constructors standings of a season after a specific round"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "drivers": {
         "Aliases": ["drivers", "d"],
         "Description": ["Get details about drivers of a season"],
-        "Options": ["-y YEAR", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
     },
     "driversStandings": {
         "Aliases": ["scoreboard", "sb"],
         "Description": ["Get the drivers standings of a season after a specific round"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "next": {
         "Aliases": ["next", "n"],
         "Description": ["Get details about the next race"],
-        "Options": ["--table", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT"]
+        "Options": []
     },
     "pitstops": {
         "Aliases": ["pitstops", "pit"],
         "Description": ["Get details about pitstops of a race"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "predictions": {
         "Aliases": ["predictions", "p"],
@@ -41,17 +41,17 @@ const helpCommands = {
     "qualifs": {
         "Aliases": ["qualifs", "q"],
         "Description": ["Get details about qualifications of a race"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "results": {
         "Aliases": ["results", "r"],
         "Description": ["Get results of a race"],
-        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+        "Options": ["-y YEAR", "-r ROUND", "-f FILTER1,FILTER2,..." ]
     },
     "schedule": {
         "Aliases": ["schedule", "s"],
         "Description": ["Get schedule of a season"],
-        "Options": ["-y YEAR", "-f FILTER1,FILTER2,...", "-col COLOR", "-bg BACKGROUND_COLOR", "-s FONT_SIZE", "-font FONT" ]
+        "Options": ["-y YEAR", "-f FILTER1,FILTER2,..." ]
     },
     "pred_results": {
         "Aliases": ["pred_results", "pr"],
@@ -152,9 +152,9 @@ function help(msg, args) {
     const embed = new MessageEmbed()
     .setTitle("Command '"+cmd+"': ")
 	.addFields(
-		{ name: 'Aliases', value: aliasesStr },
-		{ name: 'Description', value: descStr},
-		{ name: 'Options', value: optsStr},
+		{ name: 'Aliases', value: aliasesStr == "" ? "None" : aliasesStr },
+		{ name: 'Description', value: descStr == "" ? "None" : descStr},
+		{ name: 'Options', value: optsStr == "" ? "None" : optsStr},
 	)
 	.setTimestamp()
 

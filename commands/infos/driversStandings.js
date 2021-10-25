@@ -37,9 +37,8 @@ function driversStandings(msg, args) {
                 }
                 if (isIn) data.push( row );
             };
-        
-            let str = utils.array_to_text(data);
-            utils.text_to_image(str, args);
+
+            utils.create_image(data, "FORMULA 1 - " + year.toUpperCase() + " SEASON DRIVERS STANDINGS")
 
             utils.send(msg, {files: ["out.png"]});
         }
