@@ -27,7 +27,7 @@ const arrToInstanceCountObj = arr => arr.reduce((obj, e) => {
   
 class SQL{
 
-    static db = new sqlite3.Database("preds.sql", (err) => {
+    static db = new sqlite3.Database("preds.db", (err) => {
         if (err) {
         console.log('Could not connect to database', err)
         }
