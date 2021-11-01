@@ -8,37 +8,33 @@ const SQL = utils.SQL
 
 async function predictions(msg, args) {
     ergast.getRace("current", "next", async function(err, race){
-        try{
-            let data = [];
-            data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
+        if(err) return await utils.send(msg, {content: "Race not found"})
+        let data = [];
+        data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
 
-            let seasonYear = race["season"];
-            let round = race["round"];
-            let gp = race["raceName"];
-            let circuit = race["circuit"];
-            let circuitName = circuit["circuitName"];
-            let location = circuit["location"];
-            let city = location["locality"];
-            let country = location["country"];
-            let date = race["date"];
-            let time = race["time"];
+        let seasonYear = race["season"];
+        let round = race["round"];
+        let gp = race["raceName"];
+        let circuit = race["circuit"];
+        let circuitName = circuit["circuitName"];
+        let location = circuit["location"];
+        let city = location["locality"];
+        let country = location["country"];
+        let date = race["date"];
+        let time = race["time"];
 
-            let raceStartsAt = new Date(date+" "+time)
-            raceStartsAt.setHours(raceStartsAt.getHours() - 1)
-            let diff = raceStartsAt - new Date()
-            let hours = diff / (1000*60*60)
+        let raceStartsAt = new Date(date+" "+time)
+        raceStartsAt.setHours(raceStartsAt.getHours() - 1)
+        let diff = raceStartsAt - new Date()
+        let hours = diff / (1000*60*60)
 
-            time = time.substring(0, time.length-4);
-            time = time.replace(':', 'h')
+        time = time.substring(0, time.length-4);
+        time = time.replace(':', 'h')
 
-            let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
-            data.push( row );
-            
-            var ret = `${row[2]} - ${row[4]}, ${row[5]}\n${row[6]} ${row[7]}`
-        }
-        catch(error){
-            await utils.send(msg, {content: "Unknow error"});
-        }
+        let row = [seasonYear, round, gp, circuitName, city, country, date.replaceAll('-', '/'), time];
+        data.push( row );
+        
+        var ret = `${row[2]} - ${row[4]}, ${row[5]}\n${row[6]} ${row[7]}`
 
         let race_id = `${race["season"]}${race["round"]}`;
        
@@ -52,7 +48,7 @@ async function predictions(msg, args) {
         let value = await SQL.get_preds([user_id, race_id]);
         if (value == undefined){
             if (user_id == author.id){
-                if (hours > 0) return utils.send(msg, {content: "You can register and modify your prediction until one hour before the beginning of the race !"})
+                if (hours < 1) return utils.send(msg, {content: "You can register and modify your prediction until one hour before the beginning of the race !"})
                 pred = []
                 for (let i=0; i<20; i++){
                     pred.push("NaN");

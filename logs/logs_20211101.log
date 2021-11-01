@@ -1,0 +1,32 @@
+[Logs @Mon, 01 Nov 2021 18:43:21 GMT] Botas has connected to Discord
+
+[Logs @Mon, 01 Nov 2021 18:43:22 GMT] Warning job created for: Mexico City Grand Prix - Mexico City, Mexico - 2021-11-07 19:00:00Z at Sun Nov 07 2021 18:00:00 GMT+0100 (heure normale d’Europe centrale)
+
+node:internal/fs/utils:344
+    throw err;
+    ^
+
+Error: ENOENT: no such file or directory, lstat '/fonts'
+[90m    at Object.realpathSync (node:fs:2486:7)[39m
+    at registerFont (/home/conan/NodeJS/F1-Bot-JS/node_modules/[4mcanvas[24m/index.js:48:34)
+    at Object.<anonymous> (/home/conan/NodeJS/F1-Bot-JS/testcanvas.js:4:1)
+[90m    at Module._compile (node:internal/modules/cjs/loader:1101:14)[39m
+[90m    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)[39m
+[90m    at Module.load (node:internal/modules/cjs/loader:981:32)[39m
+[90m    at Function.Module._load (node:internal/modules/cjs/loader:822:12)[39m
+[90m    at Module.require (node:internal/modules/cjs/loader:1005:19)[39m
+[90m    at require (node:internal/modules/cjs/helpers:102:18)[39m
+    at Object.<anonymous> (/home/conan/NodeJS/F1-Bot-JS/utils.js:177:19) {
+  errno: [33m-2[39m,
+  syscall: [32m'lstat'[39m,
+  code: [32m'ENOENT'[39m,
+  path: [32m'/fonts'[39m
+}
+[Logs @Mon, 01 Nov 2021 18:55:01 GMT] Botas has connected to Discord
+
+[Logs @Mon, 01 Nov 2021 18:55:01 GMT] Warning job created for: Mexico City Grand Prix - Mexico City, Mexico - 2021-11-07 19:00:00Z at Sun Nov 07 2021 18:00:00 GMT+0100 (heure normale d’Europe centrale)
+
+[Logs @Mon, 01 Nov 2021 19:29:40 GMT] Botas has connected to Discord
+
+[Logs @Mon, 01 Nov 2021 19:29:40 GMT] Warning job created for: Mexico City Grand Prix - Mexico City, Mexico - 2021-11-07 19:00:00Z at Sun Nov 07 2021 18:00:00 GMT+0100 (heure normale d’Europe centrale)
+

@@ -247,7 +247,7 @@ async function get_new_results(client){
     let round = race_id.substr(4, 2)
 
     ergast.getRaceResults(year, round,async function(err, results){
-        if (results === undefined){
+        if (err){
             return
         }
 
