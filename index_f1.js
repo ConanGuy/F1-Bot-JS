@@ -4,7 +4,7 @@ const utils = require("./utils");
 const SQL = utils.SQL;
 const help = require("./commands/help.js")
 
-const TOKEN = process.env.TOKEN;
+const TOKEN = process.env.TOKEN_BOTAS;
 
 const Discord = require("discord.js");
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });

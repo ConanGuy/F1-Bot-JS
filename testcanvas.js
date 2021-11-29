@@ -51,7 +51,7 @@ async function create_image(table, title, desc=null){
     let totalTableHeight = (fontHeight) * (table.length+1)
 
     width = Math.max(totalTableWidth, image.width, titleWidth) + 20
-    height = 10 + image.height + 10 + titleHeight + 10 + totalTableHeight + 10
+    height = 10 + image.height + 10 + titleHeight + (descHeight==0 ? 0 : 10) + descHeight + 10 + totalTableHeight + 10
     
     const canvas = createCanvas(width, height)
     const context = canvas.getContext('2d')

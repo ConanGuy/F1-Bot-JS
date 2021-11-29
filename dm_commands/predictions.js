@@ -13,9 +13,25 @@ async function show_message(message, author, pred, race_id){
         catch(error){}
     } 
 
-    message = await author.send({content: utils.set_pred_message(pred)})
-    msg_id = message.id;
-    await SQL.update_message_id([msg_id, author.id, race_id])
+    ergast.getRace("current", "next", async function(err, race){
+        if(err) return
+        
+        let gp = race["raceName"];
+        let circuit = race["circuit"];
+        let location = circuit["location"];
+        let city = location["locality"];
+        let country = location["country"];
+        let date = race["date"];
+        let time = race["time"];
+        time = time.substring(0, time.length-4);
+        time = time.replace(':', 'h')
+        time += " GMT"
+
+        let ret = `${gp} - ${city}, ${country} - ${date} ${time}\n`+utils.set_pred_message(pred)
+        message = await author.send({content: ret})
+        msg_id = message.id;
+        await SQL.update_message_id([msg_id, author.id, race_id])
+    })
 }
 
 async function reset_pred(message, author, pred, race_id){ 
@@ -24,14 +40,31 @@ async function reset_pred(message, author, pred, race_id){
         pred.push("NaN");
     }
 
-    if (message != null)
-        await message.edit({content: utils.set_pred_message(pred)})
-    else{
-        message = await author.send({content: utils.set_pred_message(pred)})
-        msg_id = message.id
-        await SQL.update_message_id([msg_id, author.id, race_id])
-    }
-    await SQL.update_pred([utils.predStr(pred), author.id, race_id])
+    ergast.getRace("current", "next", async function(err, race){
+        if(err) return 
+
+        let gp = race["raceName"];
+        let circuit = race["circuit"];
+        let location = circuit["location"];
+        let city = location["locality"];
+        let country = location["country"];
+        let date = race["date"];
+        let time = race["time"];
+        time = time.substring(0, time.length-4);
+        time = time.replace(':', 'h')
+        time += " GMT"
+
+        let ret = `${gp} - ${city}, ${country} - ${date} ${time}\n${utils.set_pred_message(pred)}`
+
+        if (message != null)
+            await message.edit({content: ret})
+        else{
+            message = await author.send({content: ret})
+            msg_id = message.id
+            await SQL.update_message_id([msg_id, author.id, race_id])
+        }
+        await SQL.update_pred([utils.predStr(pred), author.id, race_id])
+    })
 }
 
 async function add_drivers(message, drivers, author, pred, race_id){
@@ -124,6 +157,12 @@ async function dm_predictions(msg) {
             if (pred.filter(x => x=="NaN").length < args.length){
                 console.log(`[Log @${new Date()}] Returned Too many drivers given`)
                 await author.send(content="Too many drivers given")
+                return
+            }
+
+            if ([...new Set(args)].length < args.length){
+                console.log(`[Log @${new Date()}] Returned Duplicate drivers found`)
+                await author.send(content="Duplicate drivers found")
                 return
             }
             pred = await add_drivers(message, args, author, pred, race_id)

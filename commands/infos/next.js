@@ -35,7 +35,7 @@ function next(msg, args) {
             
             let ret = {content: `${row[2]} - ${row[4]}, ${row[5]} - ${row[6]} ${row[7]}`};
             if (table){
-                utils.create_image(data)
+                utils.create_image(data, "FORMULA 1 - NEXT RACE")
                 ret["files"] = ["out.png"]
             }
             utils.send(msg, ret);   

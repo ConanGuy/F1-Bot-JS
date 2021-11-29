@@ -79,9 +79,9 @@ async function pred_stands(msg, args) {
             var standDist = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY drivers_distance DESC) as rank, drivers_distance as points, user_id FROM TOTAL_SCORE WHERE race_id = (SELECT MAX(race_id) FROM TOTAL_SCORE WHERE race_id LIKE '"+year+"%"+round+"') and user_id in ("+ids+")")
         }
         else{
-            var standTot = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY points DESC) as rank, SUM(points) as points, COUNT(user_id) as races, user_id FROM TOTAL_SCORE WHERE user_id in ("+ids+") GROUP BY user_id")
-            var standGood = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY drivers_good DESC) as rank, SUM(drivers_good) as points, COUNT(user_id) as races, user_id FROM TOTAL_SCORE WHERE user_id in ("+ids+") GROUP BY user_id")
-            var standDist = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY drivers_distance DESC) as rank, SUM(drivers_distance) as points, COUNT(user_id) as races, user_id FROM TOTAL_SCORE WHERE user_id in ("+ids+") GROUP BY user_id")
+            var standTot = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY points DESC) as rank, * FROM (SELECT SUM(points) as points, COUNT(user_id) as races, user_id FROM TOTAL_SCORE WHERE user_id in ("+ids+") GROUP BY user_id)")
+            var standGood = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY points DESC) as rank, * FROM (SELECT SUM(drivers_good) as points, COUNT(user_id) as races, user_id FROM TOTAL_SCORE WHERE user_id in ("+ids+") GROUP BY user_id)")
+            var standDist = await SQL.all("SELECT ROW_NUMBER() OVER (ORDER BY points DESC) as rank, * FROM (SELECT SUM(drivers_distance) as points, COUNT(user_id) as races, user_id FROM TOTAL_SCORE WHERE user_id in ("+ids+") GROUP BY user_id)")
             desc = "Global ranking"
         }
 

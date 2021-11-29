@@ -38,7 +38,7 @@ async function pred_results(msg, args) {
     let dGood = res["drivers_good"]
     let total = res["points"]
     
-    ergast.getRace("current", "next", async function(err, race){
+    ergast.getRace("current", "last", async function(err, race){
         try{
             let data = [];
             data.push(["Season", "Round", "Grand Prix", "Circuit", "City", "Country", "Date", "Time"]);
